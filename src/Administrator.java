@@ -12,7 +12,7 @@ public class Administrator extends Account{
     @Override
     public boolean checkLogin() throws SQLException {
         DriverManager.registerDriver(new oracle.jdbc.driver.OracleDriver());
-        OracleConnection conn = (OracleConnection) DriverManager.getConnection("jdbc:oracle:thin:@studora.comp.polyu.edu.hk:1521:dbms", "20078998D", "Xyf20020429");
+        OracleConnection conn = (OracleConnection) DriverManager.getConnection("jdbc:oracle:thin:@studora.comp.polyu.edu.hk:1521:dbms", "20074794D", "Peter0817..");
         Statement stmt = conn.createStatement();
         ResultSet rset = stmt.executeQuery("select * from administrator");
         while (rset.next()) {
@@ -30,7 +30,7 @@ public class Administrator extends Account{
     }
     public void addPlace(String placeName,double x,double y) throws SQLException {
         DriverManager.registerDriver(new oracle.jdbc.driver.OracleDriver());
-        OracleConnection conn = (OracleConnection) DriverManager.getConnection("jdbc:oracle:thin:@studora.comp.polyu.edu.hk:1521:dbms", "20078998D", "Xyf20020429");
+        OracleConnection conn = (OracleConnection) DriverManager.getConnection("jdbc:oracle:thin:@studora.comp.polyu.edu.hk:1521:dbms", "20074794D", "Peter0817..");
         Statement stmt = conn.createStatement();
         ResultSet rset = stmt.executeQuery("select MAX(place_id) from place");
         rset.next();
@@ -73,14 +73,6 @@ public class Administrator extends Account{
             System.out.println("The old password is wrong!");
             conn.close();
             return false;
-        }
-
-    }
-
-    public static void main(String[] args) throws SQLException {
-        Administrator ad=new Administrator("20078998D","13510719357");
-        if(ad.checkLogin()){
-            ad.setOrderState(1,true);
         }
 
     }
