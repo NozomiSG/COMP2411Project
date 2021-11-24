@@ -7,6 +7,6 @@ public class admin {
 
         Scanner scanner = new Scanner(System.in);
         System.out.println("Please enter a new address name: ");
-
+        addName = scanner.nextLine();
     }
 }

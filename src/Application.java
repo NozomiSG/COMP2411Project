@@ -16,7 +16,7 @@ public class Application {
 
 
     public static void registerAccount()throws SQLException {
-        String username, password = "", password_1, phoneNumber = "";
+        String adminName, password = "", password_1, phoneNumber = "";
         Scanner scanner = new Scanner(System.in);
         ArrayList<String> nam = new ArrayList<>();
         ArrayList<String> tel = new ArrayList<>();
@@ -30,15 +30,15 @@ public class Application {
         }
         conn.close();
         while (true) {
-            System.out.print("Please enter your username (Enter ~ to quit): ");
+            System.out.print("Please enter your adminName (Enter ~ to quit): ");
             try {
-                username = scanner.nextLine();
-                if (username.equals("~"))
+                adminName = scanner.nextLine();
+                if (adminName.equals("~"))
                     return;
-                if (username.length() > 15)
-                    System.out.println("Your username should be less than 15 characters. Please try again!");
-                else if (nam.contains(username))
-                    System.out.println("This username has been used. Please try again!");
+                if (adminName.length() > 15)
+                    System.out.println("Your adminName should be less than 15 characters. Please try again!");
+                else if (nam.contains(adminName))
+                    System.out.println("This adminName has been used. Please try again!");
                 else
                     break;
             } catch (Exception e) {
@@ -78,9 +78,8 @@ public class Application {
                 scanner.next();
             }
         }
-        flag = true;
-        while (flag) {
-            flag = false;
+
+        while (true) {
             System.out.print("Please enter your telephone number (Enter ~ to quit): ");
             try {
                 phoneNumber = scanner.nextLine();
@@ -107,7 +106,8 @@ public class Application {
         rset = stmt.executeQuery("select count(*) from userinf");
         rset.next();
         int id = rset.getInt(1) + 1;
-        rset = stmt.executeQuery("insert into userinf values(" + id +", '" + phoneNumber + "', '" + password + "', '" + username + "')");
+        rset = stmt.executeQuery("insert into userinf values(" + id +", '" + phoneNumber + "', '" + password + "', '" + adminName + "')");
+        System.out.println("\nCreat successfully!\n\n\n");
         conn.close();
     }
 
@@ -123,12 +123,12 @@ public class Application {
 
 
     public static void loginAccount() throws SQLException {
-        String username, password, user_id;
+        String adminName, password, user_id;
         Scanner scanner = new Scanner(System.in);
-        System.out.print("Please enter your username (Enter ~ to quit): ");
+        System.out.print("Please enter your adminName (Enter ~ to quit): ");
 
-        username = scanner.nextLine();
-        if (username.equals("~"))
+        adminName = scanner.nextLine();
+        if (adminName.equals("~"))
             return;
         else {
             System.out.print("Please enter your password (Enter ~ to quit): ");
@@ -141,12 +141,12 @@ public class Application {
         Statement stmt = conn.createStatement();
         ResultSet rset = stmt.executeQuery("select u_name, password, user_id from userinf");
         while (rset.next()) {
-            if (rset.getString(1).equals(username)) {
+            if (rset.getString(1).equals(adminName)) {
                 if (rset.getString(2).equals(password) ) {
                     System.out.println("Login successfully!\n\n\n");
                     user_id = rset.getString(3);
                     conn.close();
-                    user.userHomePage(user_id);
+
                 }
                 else {
                     System.out.println("The user name or password is incorrect. Please try again");
@@ -155,13 +155,10 @@ public class Application {
             }
         }
         conn.close();
-        System.out.println("The username or password is incorrect. Please try again");
+        System.out.println("The adminName or password is incorrect. Please try again");
         loginAccount();
-
-//        userHomepage(userID);
     }
-    public static void loginAdmin() {
-
+    public static void loginAdmin() throws SQLException {
     }
     public static void list_order(int OrderID) throws SQLException {
         Scanner scanner = new Scanner(System.in);
@@ -265,7 +262,7 @@ public class Application {
         System.out.println("Register an account      >>> Enter(1)");
         System.out.println("Login your account       >>> Enter(2)");
         System.out.println("Check delivery status    >>> Enter(3)");
-        System.out.println("Login admin account      >>> Enter(4)");
+        System.out.println("Login as admin           >>> Enter(4)");
         System.out.println("Exit the program         >>> Enter(0)");
         System.out.println("=====================================\n\n\n");
         int scan;
