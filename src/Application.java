@@ -189,7 +189,7 @@ public class Application {
                     System.out.println("Your enter is wrong, please try again!");
             } catch (Exception e) {
                 System.out.println("Your enter is wrong, please try again!");
-                scanner.next();
+                scanner.nextLine();
             }
         }
 
