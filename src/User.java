@@ -48,7 +48,7 @@ public class User extends Account {
         ResultSet rest=stmt.executeQuery("select password from userinf where phone_number = " + this.getID());
         rest.next();
         if(oldPas.equals(rest.getString(1))){
-            stmt.executeQuery("update userinf set password="+"'"+newPas+"'"+" where user_id ="+"'"+this.getID()+"'");
+            stmt.executeQuery("update userinf set password="+"'"+newPas+"'"+" where phone_number ="+this.getID());
             stmt.executeQuery("COMMIT");
             System.out.println("Password has been changed!");
             conn.close();
