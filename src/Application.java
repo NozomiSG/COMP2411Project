@@ -146,7 +146,6 @@ public class Application {
                     System.out.println("Login successfully!\n\n\n");
                     user_id = rset.getString(3);
                     conn.close();
-                    user.userHomePage(user_id);
                 }
                 else {
                     System.out.println("The user name or password is incorrect. Please try again");
