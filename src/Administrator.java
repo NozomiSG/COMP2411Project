@@ -22,16 +22,18 @@ public class Administrator extends Account{
         while (rset.next()) {
             if (rset.getString(1).equals(ID)) {
                 if (rset.getString(2).equals(Password)) {
-                    System.out.println("Login successfully!\n\n\n");
                     conn.close();
+                    return true;
                 } else {
-                    System.out.println("The user name or password is incorrect. Please try again");
                     break;
                 }
             }
         }
         conn.close();
-        System.out.println("The account or password is incorrect. Please try again");
         return false;
     }
+    public void addPlace(){
+
+    }
+
 }
