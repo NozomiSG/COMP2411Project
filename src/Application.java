@@ -18,7 +18,7 @@ public class Application {
     }
 
 
-    public static void registerAccount()throws SQLException {
+    public static void registerAccount() throws SQLException {
         String username, password = "", password_1, phoneNumber = "";
         Scanner scanner = new Scanner(System.in);
         ArrayList<String> nam = new ArrayList<>();
@@ -94,9 +94,7 @@ public class Application {
                 else if (tel.contains(phoneNumber)) {
                     System.out.println("This phone number has been used. Please try again!");
                     flag = true;
-                }
-
-                else {
+                } else {
                     if (isNumeric(phoneNumber))
                         break;
                     else {
@@ -110,13 +108,11 @@ public class Application {
                 scanner.next();
             }
         }
-        conn = (OracleConnection) DriverManager.getConnection("jdbc:oracle:thin:@studora.comp.polyu.edu.hk:1521:dbms", "20074794D", "Peter0817..");
-
         stmt = conn.createStatement();
         rset = stmt.executeQuery("select count(*) from userinf");
         rset.next();
         int id = rset.getInt(1) + 1;
-        rset = stmt.executeQuery("insert into userinf values(" + id +", '" + phoneNumber + "', '" + password + "', '" + username + "')");
+        stmt.executeQuery("insert into userinf values(" + '" + phoneNumber + "', '" + password + "', '" + username + "')");
         stmt.executeQuery("COMMIT");
         conn.close();
     }
@@ -144,46 +140,45 @@ public class Application {
         if (user.checkLogin()) {
             System.out.println("Login successfully!\n\n\n");
             userHomePage();
-        }
-        else {
+        } else {
             System.out.println("The username or password is incorrect. Please try again");
             loginAccount();
         }
     }
 
     public static void loginAdmin() throws SQLException {
-        String account,password,operation="";
-        boolean flag=false;
-        Administrator ad=new Administrator(null,null);
-        Scanner scanner=new Scanner(System.in);
+        String account, password, operation = "";
+        boolean flag = false;
+        Administrator ad = new Administrator(null, null);
+        Scanner scanner = new Scanner(System.in);
         System.out.println("\n=====================================");
-        while (!operation.equals("q")){
+        while (!operation.equals("q")) {
             System.out.println("Please enter your account: ");
-        account=scanner.nextLine();
+            account = scanner.nextLine();
             ad.setID(account);
             System.out.println("Please enter your password: ");
-            password=scanner.nextLine();
+            password = scanner.nextLine();
             ad.setPassword(password);
-            if(ad.checkLogin()) {
-                flag=true;
+            if (ad.checkLogin()) {
+                flag = true;
                 break;
             }
             System.out.println("Wrong account/password! Please try again or enter 'q' to quit: ");
-            operation=scanner.nextLine();
+            operation = scanner.nextLine();
         }
-        if (flag){
+        if (flag) {
             System.out.println("===================================================");
-            System.out.println("Welcome, administrator "+ad.getID()+"!");
+            System.out.println("Welcome, administrator " + ad.getID() + "!");
             System.out.println("Change Order state                     >>> Enter(1)");
             System.out.println("Add a new place                        >>> Enter(2)");
             System.out.println("Change your password                   >>> Enter(3)");
             System.out.println("Logout                                 >>> Enter(4)");
             System.out.println("Please enter your command: ");
-            operation=scanner.nextLine();
+            operation = scanner.nextLine();
         }
-        while (true){
+        while (true) {
             try {
-                switch (operation){
+                switch (operation) {
                     case "1":
                     case "2":
                     case "3":
@@ -199,33 +194,33 @@ public class Application {
     public static void list_order(int OrderID) throws SQLException {
         Scanner scanner = new Scanner(System.in);
         DriverManager.registerDriver(new oracle.jdbc.driver.OracleDriver());
-        OracleConnection conn = (OracleConnection)DriverManager.getConnection("jdbc:oracle:thin:@studora.comp.polyu.edu.hk:1521:dbms","20074794D","Peter0817..");
+        OracleConnection conn = (OracleConnection) DriverManager.getConnection("jdbc:oracle:thin:@studora.comp.polyu.edu.hk:1521:dbms", "20074794D", "Peter0817..");
         Statement stmt = conn.createStatement();
-        ArrayList<Integer> orderid_=new ArrayList<>();
+        ArrayList<Integer> orderid_ = new ArrayList<>();
         ResultSet rset = stmt.executeQuery("select order_id from orderinf");
-        while (rset.next()){
+        while (rset.next()) {
             orderid_.add(rset.getInt(1));
         }
-        if(!orderid_.contains(OrderID)) {
+        if (!orderid_.contains(OrderID)) {
             System.out.println("There is no such orderID! Please check and try again");
             conn.close();
             checkDelivery();
         }
-        String receiver,sender;
-        rset=stmt.executeQuery("select u_name , r_name from userinf,receiver where userinf.user_id=(select user_id from orderinf where order_id="+ OrderID +") AND receiver.phone_number=(select r_phone from orderinf where order_id="+ OrderID +")");
+        String receiver, sender;
+        rset = stmt.executeQuery("select u_name , r_name from userinf,receiver where userinf.user_id=(select user_id from orderinf where order_id=" + OrderID + ") AND receiver.phone_number=(select r_phone from orderinf where order_id=" + OrderID + ")");
         rset.next();
-        sender=rset.getString(1);
-        receiver=rset.getString(2);
-        rset = stmt.executeQuery("select * from orderinf where order_id="+OrderID);
+        sender = rset.getString(1);
+        receiver = rset.getString(2);
+        rset = stmt.executeQuery("select * from orderinf where order_id=" + OrderID);
         rset.next();
         System.out.println("\n\n=====================================");
         System.out.println("The Order information: ");
-        System.out.println("OrderID:                  "+OrderID);
-        System.out.println("The sender's name:        "+sender);
-        System.out.println("The receiver's name:      "+receiver);
-        System.out.println("The number of the object: "+rset.getInt(4));
-        System.out.println("Total weight:             "+rset.getDouble(5));
-        System.out.println("Total price:              "+rset.getDouble(6)+"\n\n");
+        System.out.println("OrderID:                  " + OrderID);
+        System.out.println("The sender's name:        " + sender);
+        System.out.println("The receiver's name:      " + receiver);
+        System.out.println("The number of the object: " + rset.getInt(4));
+        System.out.println("Total weight:             " + rset.getDouble(5));
+        System.out.println("Total price:              " + rset.getDouble(6) + "\n\n");
         conn.close();
         System.out.println("Please enter to continue...");
         scanner.nextLine();
@@ -235,7 +230,7 @@ public class Application {
         System.out.println("\n=====================================");
         Scanner scanner = new Scanner(System.in);
         int choice;
-        while(true) {
+        while (true) {
             try {
                 System.out.println("OrderID to check         >>> Enter(1) ");
                 System.out.println("PhoneNumber to check     >>> Enter(2) ");
@@ -247,13 +242,14 @@ public class Application {
                 scanner.next();
             }
         }
-        if(choice==1){
+        if (choice == 1) {
             int OrderID;
-            while(true) {
+            while (true) {
                 try {
                     System.out.println("Please enter the OrderID: ");
                     OrderID = scanner.nextInt();
-                    if (String.valueOf(OrderID).length()>8) System.out.println("The OrderID should be at most 8 numbers!");
+                    if (String.valueOf(OrderID).length() > 8)
+                        System.out.println("The OrderID should be at most 8 numbers!");
                     else break;
                 } catch (Exception e) {
                     System.out.println("Your enter is wrong, please try again!");
@@ -261,16 +257,15 @@ public class Application {
                 }
             }
             list_order(OrderID);
-        }
-
-        else{
-            Scanner sc=new Scanner(System.in);
+        } else {
+            Scanner sc = new Scanner(System.in);
             String phoneNumber;
-            while(true) {
+            while (true) {
                 try {
                     System.out.println("Please enter your the phone umber: ");
                     phoneNumber = sc.nextLine();
-                    if (String.valueOf(phoneNumber).length()>13) System.out.println("The phone umber should be at most 13 numbers!");
+                    if (String.valueOf(phoneNumber).length() > 13)
+                        System.out.println("The phone umber should be at most 13 numbers!");
                     else break;
                 } catch (Exception e) {
                     System.out.println("Your enter is wrong, please try again!");
@@ -278,14 +273,14 @@ public class Application {
                 }
             }
             DriverManager.registerDriver(new oracle.jdbc.driver.OracleDriver());
-            OracleConnection conn = (OracleConnection)DriverManager.getConnection("jdbc:oracle:thin:@studora.comp.polyu.edu.hk:1521:dbms","20074794D","Peter0817..");
+            OracleConnection conn = (OracleConnection) DriverManager.getConnection("jdbc:oracle:thin:@studora.comp.polyu.edu.hk:1521:dbms", "20074794D", "Peter0817..");
             Statement stmt = conn.createStatement();
-            ResultSet rset = stmt.executeQuery("select order_id from receiver where phone_number= '"+ phoneNumber +"'");
-            while (rset.next()){
+            ResultSet rset = stmt.executeQuery("select order_id from receiver where phone_number= '" + phoneNumber + "'");
+            while (rset.next()) {
                 list_order(rset.getInt(1));
             }
-            rset = stmt.executeQuery("select order_id from orderinf where user_id=(select user_id from userinf where phone_number='"+phoneNumber+"')");
-            while (rset.next()){
+            rset = stmt.executeQuery("select order_id from orderinf where user_id=(select user_id from userinf where phone_number='" + phoneNumber + "')");
+            while (rset.next()) {
                 list_order(rset.getInt(1));
             }
             conn.close();
@@ -312,14 +307,16 @@ public class Application {
                     break;
                 else
                     System.out.println("Your enter is wrong, please try again!");
-            }catch(Exception e) {
+            } catch (Exception e) {
                 System.out.println("Your enter is wrong, please try again!");
                 scanner.next();
             }
         }
         switch (scan) {
 //            case 1 ->
-//            case 2 ->
+//            case 2 -> {
+//                Order order = new Order(user.getID());
+            }
 //            case 3 ->
             case 4 -> changePassword(user);
             case 0 -> {
@@ -337,7 +334,7 @@ public class Application {
         while (flag) {
             System.out.print("Please enter your previous password(Enter ~ to quit): ");
             pass1 = scanner.nextLine();
-            if (pass1.equals("~")) return;
+            if (pass1.equals("~")) break;
             user.setPassword(pass1);
             System.out.print("Please enter your new password(Enter ~ to quit): ");
             pass2 = scanner.nextLine();
@@ -367,7 +364,7 @@ public class Application {
                     break;
                 else
                     System.out.println("Your enter is wrong, please try again!");
-            }catch(Exception e) {
+            } catch (Exception e) {
                 System.out.println("Your enter is wrong, please try again!");
                 scanner.next();
             }
@@ -381,5 +378,14 @@ public class Application {
         }
         homepage();
     }
+
+
+    public static void deliverOrder() throws SQLException {
+        DriverManager.registerDriver(new oracle.jdbc.driver.OracleDriver());
+        OracleConnection conn = (OracleConnection) DriverManager.getConnection("jdbc:oracle:thin:@studora.comp.polyu.edu.hk:1521:dbms", "20074794D", "Peter0817..");
+        Statement stmt = conn.createStatement();
+        ResultSet rset = stmt.executeQuery("select u_name, phone_number from userinf");
+    }
+
 }
 

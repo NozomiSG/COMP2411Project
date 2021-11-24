@@ -62,7 +62,7 @@ public class Administrator extends Account{
         Statement stmt = conn.createStatement();
         ResultSet rest=stmt.executeQuery("select password from administrator where account="+this.getID());
         if(oldPas==rest.getString(1)){
-            stmt.executeQuery("update administrator set password="+"'"+newPas+"'"+" where ACCOUNT="+"'"+this.getID()+"'");
+            stmt.executeQuery("update administrator set password="+"'"+newPas+"'"+" where ACCOUNT="+"'" + this.getID() + "'");
             stmt.executeQuery("COMMIT");
             System.out.println("Password has been changed!");
             conn.close();
@@ -76,12 +76,5 @@ public class Administrator extends Account{
 
     }
 
-    public static void main(String[] args) throws SQLException {
-        Administrator ad=new Administrator("20078998D","13510719357");
-        if(ad.checkLogin()){
-            ad.setOrderState(1,true);
-        }
-
-    }
 
 }
