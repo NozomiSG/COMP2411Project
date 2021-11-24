@@ -20,12 +20,10 @@ public class Administrator extends Account{
         Statement stmt = conn.createStatement();
         ResultSet rset = stmt.executeQuery("select * from administrator");
         while (rset.next()) {
-            if (rset.getString(1).equals(username)) {
-                if (rset.getString(2).equals(password)) {
+            if (rset.getString(1).equals(ID)) {
+                if (rset.getString(2).equals(Password)) {
                     System.out.println("Login successfully!\n\n\n");
-                    user_id = rset.getString(3);
                     conn.close();
-                    user.userHomePage(user_id);
                 } else {
                     System.out.println("The user name or password is incorrect. Please try again");
                     break;
@@ -33,10 +31,7 @@ public class Administrator extends Account{
             }
         }
         conn.close();
-        System.out.println("The username or password is incorrect. Please try again");
+        System.out.println("The account or password is incorrect. Please try again");
         return false;
     }
-
-
-
 }
