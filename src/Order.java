@@ -135,7 +135,65 @@ public class Order {
             }
         }
     }
+
+    public ArrayList<Integer> printPlace() throws SQLException {
+        ArrayList<Integer> place = new ArrayList<>();
+        DriverManager.registerDriver(new oracle.jdbc.driver.OracleDriver());
+        OracleConnection conn = (OracleConnection) DriverManager.getConnection("jdbc:oracle:thin:@studora.comp.polyu.edu.hk:1521:dbms", "20074794D", "Peter0817..");
+        Statement stmt = conn.createStatement();
+        ResultSet rset = stmt.executeQuery("select * from place");
+        System.out.println("Place:");
+        while (rset.next()) {
+            System.out.printf("Place id: %8d Place name: %25S\n", rset.getInt(1), rset.getString(2));
+            place.add(rset.getInt(1));
+        }
+        conn.close();
+        return place;
+    }
     public void deliverOrder() throws SQLException {
+        int a = 0, b = 0;
+        Scanner scanner = new Scanner(System.in);
+        ArrayList<Integer> place = printPlace();
+        boolean flag = true;
+        System.out.println(place.toString());
+        while (flag) {
+            System.out.print("Select your sender place id: ");
+            try {
+                a = scanner.nextInt();
+                for (int n : place) {
+                    if (n == a) {
+                        flag = false;
+                        break;
+                    }
+                }
+                if (flag)
+                    System.out.println("Your enter is wrong, please try again!");
+            } catch (Exception e) {
+                System.out.println("Your enter is wrong, please try again!");
+                scanner.nextLine();
+            }
+        }
+        flag = true;
+        while (flag) {
+            System.out.print("Select your receiver place id: ");
+            try {
+                b = scanner.nextInt();
+                for (int n : place) {
+                    if (n == b) {
+                        flag = false;
+                        break;
+                    }
+                }
+                if (flag)
+                    System.out.println("Your enter is wrong, please try again!");
+            } catch (Exception e) {
+                System.out.println("Your enter is wrong, please try again!");
+                scanner.nextLine();
+            }
+        }
+
+
+
         DriverManager.registerDriver(new oracle.jdbc.driver.OracleDriver());
         OracleConnection conn = (OracleConnection) DriverManager.getConnection("jdbc:oracle:thin:@studora.comp.polyu.edu.hk:1521:dbms", "20074794D", "Peter0817..");
         Statement stmt = conn.createStatement();
@@ -144,11 +202,38 @@ public class Order {
         stmt.executeQuery("COMMIT");
         ResultSet rset = stmt.executeQuery("select phone_number from userinf where phone_number = " + userID);
         rset.next();
-        int total = rset.getInt(1);
         double totalWeight = 0;
         for (Item item : items)
             totalWeight += item.getWeight();
-        stmt.executeQuery("insert into orderinf values(" + userID + ", " +  + ", " + total + ", " + getID() + ", " + orderID + ", " + items.size() + ", " + totalWeight + ")");
+        double price = countPrice(a, b ,totalWeight);
+        stmt.executeQuery("insert into orderinf values('" + userID + "', " + orderID  + ", " +  items.size() + ", " + totalWeight + ", " + price + ")");
+        stmt.executeQuery("insert into order_state values('" + orderID +"', "+ 0 + ")");
+        conn.close();
+
+    }
+
+    public double countPrice(int a, int b, double weight) throws SQLException {
+        double x1, x2, y1, y2;
+        double distance;
+        DriverManager.registerDriver(new oracle.jdbc.driver.OracleDriver());
+        OracleConnection conn = (OracleConnection) DriverManager.getConnection("jdbc:oracle:thin:@studora.comp.polyu.edu.hk:1521:dbms", "20074794D", "Peter0817..");
+        Statement stmt = conn.createStatement();
+        ResultSet rset = stmt.executeQuery("select * from place where place_id = " + a);
+        rset.next();
+        x1 = rset.getDouble(3);
+        y1 = rset.getDouble(4);
+        rset = stmt.executeQuery("select * from place where place_id = " + b);
+        rset.next();
+        x2 = rset.getDouble(3);
+        y2 = rset.getDouble(4);
+        distance = Math.pow(Math.sqrt(x1-x2)+Math.sqrt(y1-y2), 1/2);
+        conn.close();
+        // minimum delivery amount
+        if (distance<100) distance = 100;
+        if (weight<3) weight = 3;
+        if (distance > 1000) return weight*distance*0.01 + 200;
+        else if (distance >= 300) return weight*distance*0.02 + 90;
+        else return weight*distance*0.05;
 
     }
 
