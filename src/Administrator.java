@@ -5,15 +5,16 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
 
-public class Administrator {
-    private String account;
-    private String password;
+public class Administrator extends Account{
+    private String ID;
+    private String Password;
 
-    public Administrator(String account, String password) {
-        this.account = account;
-        this.password = password;
+    public Administrator(String ID, String Password) {
+        super(ID, Password);
     }
-    public boolean checklogin() throws SQLException {
+
+    @Override
+    public boolean checkLogin() throws SQLException {
         DriverManager.registerDriver(new oracle.jdbc.driver.OracleDriver());
         OracleConnection conn = (OracleConnection) DriverManager.getConnection("jdbc:oracle:thin:@studora.comp.polyu.edu.hk:1521:dbms", "20078998D", "Xyf20020429");
         Statement stmt = conn.createStatement();
@@ -35,5 +36,7 @@ public class Administrator {
         System.out.println("The username or password is incorrect. Please try again");
         return false;
     }
+
+
 
 }
