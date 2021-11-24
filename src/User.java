@@ -22,10 +22,10 @@ public class User extends Account {
         Statement stmt = conn.createStatement();
         ResultSet rset = stmt.executeQuery("select * from userinf");
         while (rset.next()) {
-            if (rset.getString(4).equals(getInfo()) || rset.getString(2).equals(getInfo())) {
-                if (rset.getString(3).equals(getPassword())) {
+            if (rset.getString(1).equals(getInfo()) || rset.getString(3).equals(getInfo())) {
+                if (rset.getString(2).equals(getPassword())) {
                     setID(rset.getString(1));
-                    setUserName(rset.getString(4));
+                    setUserName(rset.getString(3));
                     conn.close();
                     return true;
                 }
@@ -45,7 +45,7 @@ public class User extends Account {
         DriverManager.registerDriver(new oracle.jdbc.driver.OracleDriver());
         OracleConnection conn = (OracleConnection) DriverManager.getConnection("jdbc:oracle:thin:@studora.comp.polyu.edu.hk:1521:dbms", "20074794D", "Peter0817..");
         Statement stmt = conn.createStatement();
-        ResultSet rest=stmt.executeQuery("select password from userinf where user_id = " + this.getID());
+        ResultSet rest=stmt.executeQuery("select password from userinf where phone_number = " + this.getID());
         rest.next();
         if(oldPas.equals(rest.getString(1))){
             stmt.executeQuery("update userinf set password="+"'"+newPas+"'"+" where user_id ="+"'"+this.getID()+"'");
