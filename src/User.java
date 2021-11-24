@@ -5,12 +5,13 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
 
-public class Administrator extends Account{
-    private String ID;
-    private String Password;
-    private String adminName;
+public class User extends Account {
 
-    public Administrator(String ID, String Password) {
+    private String ID;
+    private String password;
+    private String userName;
+
+    public User(String ID, String Password) {
         super(ID, Password);
     }
 
@@ -19,14 +20,14 @@ public class Administrator extends Account{
         DriverManager.registerDriver(new oracle.jdbc.driver.OracleDriver());
         OracleConnection conn = (OracleConnection) DriverManager.getConnection("jdbc:oracle:thin:@studora.comp.polyu.edu.hk:1521:dbms", "20078998D", "Xyf20020429");
         Statement stmt = conn.createStatement();
-        ResultSet rset = stmt.executeQuery("select * from administrator");
+        ResultSet rset = stmt.executeQuery("select * from userinf");
         while (rset.next()) {
-            if (rset.getString(1).equals(adminName)) {
-                if (rset.getString(2).equals(Password)) {
+            if (rset.getString(4).equals(userName)) {
+                if (rset.getString(3).equals(password)) {
                     System.out.println("Login successfully!\n\n\n");
-                    ID = rset.getString(3);
+                    ID = rset.getString(1);
                     conn.close();
-                    HomePage(ID);
+                    return true;
                 } else {
                     System.out.println("The user name or password is incorrect. Please try again");
                     break;
@@ -37,7 +38,5 @@ public class Administrator extends Account{
         System.out.println("The adminName or password is incorrect. Please try again");
         return false;
     }
-
-
 
 }

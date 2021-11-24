@@ -8,4 +8,7 @@ public abstract class Account {
         this.Password=Password;
     }
     public abstract boolean checkLogin() throws SQLException;
+    public String getID() {
+        return ID;
+    }
 }
