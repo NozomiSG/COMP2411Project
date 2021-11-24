@@ -18,7 +18,7 @@ public class Application {
     }
 
 
-    public static void registerAccount()throws SQLException {
+    public static void registerAccount() throws SQLException {
         String username, password = "", password_1, phoneNumber = "";
         Scanner scanner = new Scanner(System.in);
         ArrayList<String> nam = new ArrayList<>();
@@ -94,9 +94,7 @@ public class Application {
                 else if (tel.contains(phoneNumber)) {
                     System.out.println("This phone number has been used. Please try again!");
                     flag = true;
-                }
-
-                else {
+                } else {
                     if (isNumeric(phoneNumber))
                         break;
                     else {
@@ -116,7 +114,7 @@ public class Application {
         rset = stmt.executeQuery("select count(*) from userinf");
         rset.next();
         int id = rset.getInt(1) + 1;
-        rset = stmt.executeQuery("insert into userinf values(" + id +", '" + phoneNumber + "', '" + password + "', '" + username + "')");
+        rset = stmt.executeQuery("insert into userinf values(" + id + ", '" + phoneNumber + "', '" + password + "', '" + username + "')");
         stmt.executeQuery("COMMIT");
         conn.close();
     }
@@ -144,59 +142,89 @@ public class Application {
         if (user.checkLogin()) {
             System.out.println("Login successfully!\n\n\n");
             userHomePage();
-        }
-        else {
+        } else {
             System.out.println("The username or password is incorrect. Please try again");
             loginAccount();
         }
     }
 
     public static void loginAdmin() throws SQLException {
-        String account,password,operation="";
-        boolean flag=false;
-        Administrator ad=new Administrator(null,null);
-        Scanner scanner=new Scanner(System.in);
+        String account, password, operation = "";
+        boolean flag = false;
+        Administrator ad = new Administrator(null, null);
+        Scanner scanner = new Scanner(System.in);
         System.out.println("\n=====================================");
-        while (!operation.equals("q")){
-            System.out.println("Please enter your account: ");
-        account=scanner.nextLine();
+        while (true){
+            System.out.print("Please enter your account: ");
+            account = scanner.nextLine();
             ad.setID(account);
-            System.out.println("Please enter your password: ");
-            password=scanner.nextLine();
+            System.out.print("Please enter your password: ");
+            password = scanner.nextLine();
             ad.setPassword(password);
-            if(ad.checkLogin()) {
-                flag=true;
-                break;
+            if (ad.checkLogin()) {
+                logAdminmain(ad);
             }
-            System.out.println("Wrong account/password! Please try again or enter 'q' to quit: ");
-            operation=scanner.nextLine();
-        }
-        if (flag){
-            while (true){
-                try {
-                    System.out.println("===================================================");
-                    System.out.println("Welcome, administrator "+ad.getID()+"!");
-                    System.out.println("Change Order state                     >>> Enter(1)");
-                    System.out.println("Add a new place                        >>> Enter(2)");
-                    System.out.println("Change your password                   >>> Enter(3)");
-                    System.out.println("Logout                                 >>> Enter(4)");
-                    System.out.println("Please enter your command: ");
-                    operation=scanner.nextLine();
-                    switch (operation){
-                        case "1":
-                        case "2":
-                        case "3":
-                            changePassword(ad);
-                        case "4":
-                    }
-                } catch (Exception e) {
-                    System.out.println("Your enter is wrong, please try again!");
-                    scanner.nextLine();
-                }
-        }
+            else System.out.println("Wrong account/password! Please try again or enter 'q' to quit or press 'enter' to try again!: ");
+            operation = scanner.nextLine();
+            if (operation.equals("q")) break;
         }
     }
 
+    public static void logAdminmain(Administrator ad) throws SQLException {
+        Scanner scanner=new Scanner(System.in);
+        String operation;
+        while (true) {
+            System.out.println("\n\n\n\n\n===================================================");
+            System.out.println("Welcome, administrator " + ad.getID());
+            System.out.println("Change Order state                     >>> Enter(1)");
+            System.out.println("Add a new place                        >>> Enter(2)");
+            System.out.println("Change your password                   >>> Enter(3)");
+            System.out.println("Logout                                 >>> Enter(4)");
+            System.out.print("Please enter your command: ");
+            try {
+                operation = scanner.nextLine();
+                if (Integer.valueOf(operation) >= 1 && Integer.valueOf(operation) <= 4)
+                    break;
+                else
+                    System.out.println("Your enter is wrong, please try again!");
+            } catch (Exception e) {
+                System.out.println("Your enter is wrong, please try again!");
+                scanner.next();
+            }
+        }
+
+        switch (operation) {
+            case "1" -> changeOrderState(ad);
+            case "2" -> changePlace(ad);
+            case "3" -> changePassword(ad);
+            case "4" ->homepage();
+        }
+
+        logAdminmain(ad);
+    }
+
+    public static void changeOrderState(Administrator ad) throws SQLException {
+        int orderid;
+        boolean state;
+        Scanner scanner=new Scanner(System.in);
+        System.out.print("Please input the OrderID: ");
+        orderid=scanner.nextInt();
+        System.out.print("Please enter the state you want to set(true/false):  ");
+        state=scanner.nextBoolean();
+        ad.setOrderState(orderid,state);
+    }
+    public static void changePlace(Administrator ad) throws SQLException{
+        String PlaceName;
+        Double x,y;
+        Scanner scanner=new Scanner(System.in);
+        System.out.print("Please input the name of the place: ");
+        PlaceName=scanner.nextLine();
+        System.out.println("Please input the X-coordinate of the place "+PlaceName+": ");
+        x=scanner.nextDouble();
+        System.out.println("Please input the y-coordinate of the place "+PlaceName+": ");
+        y=scanner.nextDouble();
+        ad.addPlace(PlaceName,x,y);
+    }
     public static void list_order(int OrderID) throws SQLException {
         Scanner scanner = new Scanner(System.in);
         DriverManager.registerDriver(new oracle.jdbc.driver.OracleDriver());
@@ -338,8 +366,7 @@ public class Application {
         while (flag) {
             System.out.print("Please enter your previous password(Enter ~ to quit): ");
             pass1 = scanner.nextLine();
-            if (pass1.equals("~")) return;
-            user.setPassword(pass1);
+            if (pass1.equals("~")) break;
             System.out.print("Please enter your new password(Enter ~ to quit): ");
             pass2 = scanner.nextLine();
             if (pass2.equals("~")) break;
