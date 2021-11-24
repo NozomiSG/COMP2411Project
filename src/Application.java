@@ -10,6 +10,9 @@ import java.util.Scanner;
 
 public class Application {
 
+    public static User user = new User("", "");
+    public static Administrator admin = new Administrator("", "");
+
     public static void main(String[] args) throws SQLException {
         homepage();
     }
@@ -88,16 +91,22 @@ public class Application {
                     return;
                 if (phoneNumber.length() > 13)
                     System.out.println("Your phone number should be less than 13 digits. Please try again!");
-                else if (tel.contains(phoneNumber))
+                else if (tel.contains(phoneNumber)) {
                     System.out.println("This phone number has been used. Please try again!");
+                    flag = true;
+                }
+
                 else {
                     if (isNumeric(phoneNumber))
                         break;
-                    else
+                    else {
                         System.out.println("Your number should be all digit. Please try again");
+                        flag = true;
+                    }
                 }
             } catch (Exception e) {
                 System.out.println("Your enter is wrong, please try again!");
+                flag = true;
                 scanner.next();
             }
         }
@@ -111,8 +120,6 @@ public class Application {
         conn.close();
     }
 
-
-
     public static boolean isNumeric(String str) {
         if (str == null || str.length() == 0) {
             return false;
@@ -120,44 +127,29 @@ public class Application {
         return str.chars().allMatch(Character::isDigit);
     }
 
-
-
     public static void loginAccount() throws SQLException {
-        String username, password, user_id;
+        String info, password;
         Scanner scanner = new Scanner(System.in);
-        System.out.print("Please enter your username (Enter ~ to quit): ");
 
-        username = scanner.nextLine();
-        if (username.equals("~"))
-            return;
+        System.out.print("Please enter your username/telephone number(Enter ~ to quit): ");
+        info = scanner.nextLine();
+        System.out.println(info);
+        user.setInfo(info);
+        if (info.equals("~")) return;
+        System.out.println(user.getInfo());
+        System.out.print("Please enter your password(Enter ~ to quit): ");
+        password = scanner.nextLine();
+        if (password.equals("~")) return;
+        user.setPassword(password);
+
+        if (user.checkLogin()) {
+            System.out.println("Login successfully!\n\n\n");
+            userHomePage();
+        }
         else {
-            System.out.print("Please enter your password (Enter ~ to quit): ");
-            password = scanner.nextLine();
-            if (password.equals("~"))
-                return;
+            System.out.println("The username or password is incorrect. Please try again");
+            loginAccount();
         }
-        DriverManager.registerDriver(new oracle.jdbc.driver.OracleDriver());
-        OracleConnection conn = (OracleConnection) DriverManager.getConnection("jdbc:oracle:thin:@studora.comp.polyu.edu.hk:1521:dbms", "20074794D", "Peter0817..");
-        Statement stmt = conn.createStatement();
-        ResultSet rset = stmt.executeQuery("select u_name, password, user_id from userinf");
-        while (rset.next()) {
-            if (rset.getString(1).equals(username)) {
-                if (rset.getString(2).equals(password) ) {
-                    System.out.println("Login successfully!\n\n\n");
-                    user_id = rset.getString(3);
-                    conn.close();
-                }
-                else {
-                    System.out.println("The user name or password is incorrect. Please try again");
-                    break;
-                }
-            }
-        }
-        conn.close();
-        System.out.println("The username or password is incorrect. Please try again");
-        loginAccount();
-
-//        userHomepage(userID);
     }
 
 
@@ -261,6 +253,48 @@ public class Application {
 
     }
 
+    public static void userHomePage() {
+        System.out.println("Hello " + user.getName());
+        System.out.println("\n==========================================");
+        System.out.println("Check personal Information     >>> Enter(1)");
+        System.out.println("Establish new orders           >>> Enter(2)");
+        System.out.println("Check delivery status          >>> Enter(3)");
+        System.out.println("Change password                >>> Enter(4)");
+        System.out.println("Logout                         >>> Enter(0)");
+        System.out.println("===========================================\n");
+        int scan;
+        Scanner scanner = new Scanner(System.in);
+        while (true) {
+            System.out.print("Please enter your command: ");
+            try {
+                scan = scanner.nextInt();
+                if (scan >= 0 && scan <= 4)
+                    break;
+                else
+                    System.out.println("Your enter is wrong, please try again!");
+            }catch(Exception e) {
+                System.out.println("Your enter is wrong, please try again!");
+                scanner.next();
+            }
+        }
+        switch (scan) {
+//            case 1 ->
+//            case 2 ->
+//            case 3 ->
+//            case 4 ->
+            case 0 -> {
+                System.out.println("Bye\n\n\n\n\n\n\n");
+                return;
+            }
+        }
+        userHomePage();
+    }
+
+    public static void changePassword() {
+
+    }
+
+
     public static void homepage() throws SQLException {
         System.out.println("Welcome use deliverApp!");
         System.out.println("\n=====================================");
@@ -286,20 +320,11 @@ public class Application {
             }
         }
         switch (scan) {
-            case 1 ->
-                registerAccount();
-            case 2 ->
-                loginAccount();
-            case 3 ->
-                checkDelivery();
-            case 4 ->
-                loginAdmin();
-            case 0 -> {
-                System.out.println("Bye");
-                return;
-            }
-            default ->
-                System.out.println("Unknown command, please enter again!\n\n\n\n");
+            case 1 -> registerAccount();
+            case 2 -> loginAccount();
+            case 3 -> checkDelivery();
+            case 4 -> loginAdmin();
+            case 0 -> System.out.println("Bye");
         }
         homepage();
     }

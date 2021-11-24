@@ -45,10 +45,10 @@ public class Administrator extends Account{
         int st;
         if(state){
             st=1;
-            }
+        }
         else st=0;
         DriverManager.registerDriver(new oracle.jdbc.driver.OracleDriver());
-        OracleConnection conn = (OracleConnection) DriverManager.getConnection("jdbc:oracle:thin:@studora.comp.polyu.edu.hk:1521:dbms", "20078998D", "Xyf20020429");
+        OracleConnection conn = (OracleConnection) DriverManager.getConnection("jdbc:oracle:thin:@studora.comp.polyu.edu.hk:1521:dbms", "20074794D", "Peter0817..");
         Statement stmt = conn.createStatement();
         stmt.executeQuery("update order_state set state="+st+" where order_id="+orderID);
         stmt.executeQuery("COMMIT");
@@ -58,7 +58,7 @@ public class Administrator extends Account{
 
     public void changePassword(String oldPas,String newPas) throws SQLException {
         DriverManager.registerDriver(new oracle.jdbc.driver.OracleDriver());
-        OracleConnection conn = (OracleConnection) DriverManager.getConnection("jdbc:oracle:thin:@studora.comp.polyu.edu.hk:1521:dbms", "20078998D", "Xyf20020429");
+        OracleConnection conn = (OracleConnection) DriverManager.getConnection("jdbc:oracle:thin:@studora.comp.polyu.edu.hk:1521:dbms", "20074794D", "Peter0817..");
         Statement stmt = conn.createStatement();
         ResultSet rest=stmt.executeQuery("select password from administrator where account="+this.getID());
         if(oldPas==rest.getString(1)){
