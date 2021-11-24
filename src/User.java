@@ -39,6 +39,24 @@ public class User extends Account {
         return false;
     }
 
+    @Override
+
+    public void changePassword(String oldPas,String newPas) throws SQLException {
+        DriverManager.registerDriver(new oracle.jdbc.driver.OracleDriver());
+        OracleConnection conn = (OracleConnection) DriverManager.getConnection("jdbc:oracle:thin:@studora.comp.polyu.edu.hk:1521:dbms", "20078998D", "Xyf20020429");
+        Statement stmt = conn.createStatement();
+        ResultSet rest=stmt.executeQuery("select password from userinf where account = " + this.getID());
+        if(oldPas==rest.getString(1)){
+            stmt.executeQuery("update administrator set password="+"'"+newPas+"'"+" where ACCOUNT="+"'"+this.getID()+"'");
+            stmt.executeQuery("COMMIT");
+            System.out.println("Password has been changed!");
+        }
+        else {
+            System.out.println("The old password is wrong!");
+        }
+        conn.close();
+    }
+
     public String getName() {
         return userName;
     }

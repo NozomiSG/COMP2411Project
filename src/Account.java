@@ -8,6 +8,7 @@ public abstract class Account {
         this.setPassword(Password);
     }
     public abstract boolean checkLogin() throws SQLException;
+    public abstract void changePassword(String oldPas,String newPas) throws SQLException;
     public String getID(){return ID;}
     public String getPassword(){return Password;}
     public void setID(String ID){this.ID=ID;}
