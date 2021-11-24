@@ -17,7 +17,6 @@ public class Administrator extends Account{
         ResultSet rset = stmt.executeQuery("select * from administrator");
         while (rset.next()) {
             if (rset.getString(1).equals(this.getID())) {
-                System.out.println(rset.getString(2));
                 if (rset.getString(2).equals(this.getPassword())) {
                     conn.close();
                     return true;
@@ -36,7 +35,7 @@ public class Administrator extends Account{
         ResultSet rset = stmt.executeQuery("select MAX(place_id) from place");
         rset.next();
         int placeid=rset.getInt(1);
-        stmt.executeQuery("INSERT INTO place values("+(++placeid)+","+placeName+","+String.valueOf(x)+","+String.valueOf(y)+")");
+        stmt.executeQuery("INSERT INTO place values("+(++placeid)+",'"+placeName+"',"+String.valueOf(x)+","+String.valueOf(y)+")");
         stmt.executeQuery("COMMIT");
         System.out.println("Add place successfully!");
         conn.close();
@@ -75,7 +74,10 @@ public class Administrator extends Account{
 
     public static void main(String[] args) throws SQLException {
         Administrator ad=new Administrator("20078998D","13510719357");
-        System.out.println(ad.checkLogin());
+        if(ad.checkLogin()){
+            ad.setOrderState(1,true);
+        }
+
     }
 
 }
