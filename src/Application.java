@@ -117,6 +117,7 @@ public class Application {
         rset.next();
         int id = rset.getInt(1) + 1;
         rset = stmt.executeQuery("insert into userinf values(" + id +", '" + phoneNumber + "', '" + password + "', '" + username + "')");
+        stmt.executeQuery("COMMIT");
         conn.close();
     }
 
@@ -133,10 +134,8 @@ public class Application {
 
         System.out.print("Please enter your username/telephone number(Enter ~ to quit): ");
         info = scanner.nextLine();
-        System.out.println(info);
         user.setInfo(info);
         if (info.equals("~")) return;
-        System.out.println(user.getInfo());
         System.out.print("Please enter your password(Enter ~ to quit): ");
         password = scanner.nextLine();
         if (password.equals("~")) return;
@@ -151,39 +150,40 @@ public class Application {
             loginAccount();
         }
     }
+
     public static void loginAdmin() throws SQLException {
-        String account, password, operation = "";
-        boolean flag = false;
-        Administrator ad = new Administrator(null, null);
-        Scanner scanner = new Scanner(System.in);
+        String account,password,operation="";
+        boolean flag=false;
+        Administrator ad=new Administrator(null,null);
+        Scanner scanner=new Scanner(System.in);
         System.out.println("\n=====================================");
-        while (!operation.equals("q")) {
+        while (!operation.equals("q")){
             System.out.println("Please enter your account: ");
-            account = scanner.nextLine();
+        account=scanner.nextLine();
             ad.setID(account);
             System.out.println("Please enter your password: ");
-            password = scanner.nextLine();
+            password=scanner.nextLine();
             ad.setPassword(password);
-            if (ad.checkLogin()) {
-                flag = true;
+            if(ad.checkLogin()) {
+                flag=true;
                 break;
             }
             System.out.println("Wrong account/password! Please try again or enter 'q' to quit: ");
-            operation = scanner.nextLine();
+            operation=scanner.nextLine();
         }
-        if (flag) {
+        if (flag){
             System.out.println("===================================================");
-            System.out.println("Welcome, administrator " + ad.getID() + "!");
+            System.out.println("Welcome, administrator "+ad.getID()+"!");
             System.out.println("Change Order state                     >>> Enter(1)");
             System.out.println("Add a new place                        >>> Enter(2)");
             System.out.println("Change your password                   >>> Enter(3)");
             System.out.println("Logout                                 >>> Enter(4)");
             System.out.println("Please enter your command: ");
-            operation = scanner.nextLine();
+            operation=scanner.nextLine();
         }
-        while (true) {
+        while (true){
             try {
-                switch (operation) {
+                switch (operation){
                     case "1":
                     case "2":
                     case "3":
@@ -195,6 +195,7 @@ public class Application {
             }
         }
     }
+
     public static void list_order(int OrderID) throws SQLException {
         Scanner scanner = new Scanner(System.in);
         DriverManager.registerDriver(new oracle.jdbc.driver.OracleDriver());
@@ -229,6 +230,7 @@ public class Application {
         System.out.println("Please enter to continue...");
         scanner.nextLine();
     }
+
     public static void checkDelivery() throws SQLException {
         System.out.println("\n=====================================");
         Scanner scanner = new Scanner(System.in);
@@ -291,7 +293,7 @@ public class Application {
 
     }
 
-    public static void userHomePage() {
+    public static void userHomePage() throws SQLException {
         System.out.println("Hello " + user.getName());
         System.out.println("\n==========================================");
         System.out.println("Check personal Information     >>> Enter(1)");
@@ -319,7 +321,7 @@ public class Application {
 //            case 1 ->
 //            case 2 ->
 //            case 3 ->
-//            case 4 ->
+            case 4 -> changePassword(user);
             case 0 -> {
                 System.out.println("Bye\n\n\n\n\n\n\n");
                 return;
@@ -328,9 +330,24 @@ public class Application {
         userHomePage();
     }
 
-    public static void changePassword() {
+    public static void changePassword(Account ac) throws SQLException {
+        String pass1, pass2;
+        Scanner scanner = new Scanner(System.in);
+        boolean flag = true;
+        while (flag) {
+            System.out.print("Please enter your previous password(Enter ~ to quit): ");
+            pass1 = scanner.nextLine();
+            if (pass1.equals("~")) return;
+            user.setPassword(pass1);
+            System.out.print("Please enter your new password(Enter ~ to quit): ");
+            pass2 = scanner.nextLine();
+            if (pass2.equals("~")) break;
+            flag = ac.changePassword(pass1, pass2);
+        }
 
     }
+
+
     public static void homepage() throws SQLException {
         System.out.println("Welcome use deliverApp!");
         System.out.println("\n=====================================");
@@ -365,3 +382,4 @@ public class Application {
         homepage();
     }
 }
+
