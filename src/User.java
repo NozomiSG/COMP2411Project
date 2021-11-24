@@ -41,20 +41,24 @@ public class User extends Account {
 
     @Override
 
-    public void changePassword(String oldPas,String newPas) throws SQLException {
+    public boolean changePassword(String oldPas,String newPas) throws SQLException {
         DriverManager.registerDriver(new oracle.jdbc.driver.OracleDriver());
-        OracleConnection conn = (OracleConnection) DriverManager.getConnection("jdbc:oracle:thin:@studora.comp.polyu.edu.hk:1521:dbms", "20078998D", "Xyf20020429");
+        OracleConnection conn = (OracleConnection) DriverManager.getConnection("jdbc:oracle:thin:@studora.comp.polyu.edu.hk:1521:dbms", "20074794D", "Peter0817..");
         Statement stmt = conn.createStatement();
-        ResultSet rest=stmt.executeQuery("select password from userinf where account = " + this.getID());
-        if(oldPas==rest.getString(1)){
-            stmt.executeQuery("update administrator set password="+"'"+newPas+"'"+" where ACCOUNT="+"'"+this.getID()+"'");
+        ResultSet rest=stmt.executeQuery("select password from userinf where user_id = " + this.getID());
+        rest.next();
+        if(oldPas.equals(rest.getString(1))){
+            stmt.executeQuery("update userinf set password="+"'"+newPas+"'"+" where user_id ="+"'"+this.getID()+"'");
             stmt.executeQuery("COMMIT");
             System.out.println("Password has been changed!");
+            conn.close();
+            return false;
         }
         else {
             System.out.println("The old password is wrong!");
+            conn.close();
+            return true;
         }
-        conn.close();
     }
 
     public String getName() {
@@ -63,7 +67,6 @@ public class User extends Account {
     public String getInfo() {
         return userInfo;
     }
-
     public void setInfo(String userInfo) {
         this.userInfo = userInfo;
     }

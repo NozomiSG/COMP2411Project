@@ -56,7 +56,7 @@ public class Administrator extends Account{
         System.out.println("Update successfully!");
     }
 
-    public void changePassword(String oldPas,String newPas) throws SQLException {
+    public boolean changePassword(String oldPas,String newPas) throws SQLException {
         DriverManager.registerDriver(new oracle.jdbc.driver.OracleDriver());
         OracleConnection conn = (OracleConnection) DriverManager.getConnection("jdbc:oracle:thin:@studora.comp.polyu.edu.hk:1521:dbms", "20074794D", "Peter0817..");
         Statement stmt = conn.createStatement();
@@ -65,11 +65,15 @@ public class Administrator extends Account{
             stmt.executeQuery("update administrator set password="+"'"+newPas+"'"+" where ACCOUNT="+"'"+this.getID()+"'");
             stmt.executeQuery("COMMIT");
             System.out.println("Password has been changed!");
+            conn.close();
+            return true;
         }
         else {
             System.out.println("The old password is wrong!");
+            conn.close();
+            return false;
         }
-        conn.close();
+
     }
 
     public static void main(String[] args) throws SQLException {
