@@ -18,16 +18,14 @@ public class User extends Account {
     @Override
     public boolean checkLogin() throws SQLException {
         DriverManager.registerDriver(new oracle.jdbc.driver.OracleDriver());
-        OracleConnection conn = (OracleConnection) DriverManager.getConnection("jdbc:oracle:thin:@studora.comp.polyu.edu.hk:1521:dbms", "20078998D", "Xyf20020429");
+        OracleConnection conn = (OracleConnection) DriverManager.getConnection("jdbc:oracle:thin:@studora.comp.polyu.edu.hk:1521:dbms", "20074794D", "Peter0817..");
         Statement stmt = conn.createStatement();
         ResultSet rset = stmt.executeQuery("select * from userinf");
         while (rset.next()) {
-            System.out.println("local name: "+rset.getString(4));
-            System.out.println("local pass: "+rset.getString(3));
             if (rset.getString(4).equals(getInfo()) || rset.getString(2).equals(getInfo())) {
                 if (rset.getString(3).equals(getPassword())) {
-                    this.getID() = rset.getString(1);
-                    this.userName = rset.getString(4);
+                    setID(rset.getString(1));
+                    setUserName(rset.getString(4));
                     conn.close();
                     return true;
                 }
@@ -47,8 +45,12 @@ public class User extends Account {
     public String getInfo() {
         return userInfo;
     }
-    public void setInfo(String useInfo) {
+
+    public void setInfo(String userInfo) {
         this.userInfo = userInfo;
+    }
+    public void setUserName(String userName) {
+        this.userName = userName;
     }
 
 }

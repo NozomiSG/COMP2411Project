@@ -133,8 +133,9 @@ public class Application {
 
         System.out.print("Please enter your username/telephone number(Enter ~ to quit): ");
         info = scanner.nextLine();
-        if (info.equals("~")) return;
+        System.out.println(info);
         user.setInfo(info);
+        if (info.equals("~")) return;
         System.out.println(user.getInfo());
         System.out.print("Please enter your password(Enter ~ to quit): ");
         password = scanner.nextLine();
@@ -250,21 +251,21 @@ public class Application {
     }
 
     public static void userHomePage() {
-        System.out.println("Hello: " + user.getName() + "\n");
-        System.out.println("\n===========================================\n");
+        System.out.println("Hello " + user.getName());
+        System.out.println("\n==========================================");
         System.out.println("Check personal Information     >>> Enter(1)");
         System.out.println("Establish new orders           >>> Enter(2)");
         System.out.println("Check delivery status          >>> Enter(3)");
         System.out.println("Change password                >>> Enter(4)");
         System.out.println("Logout                         >>> Enter(0)");
-        System.out.println("\n===========================================\n\n\n");
+        System.out.println("===========================================\n");
         int scan;
         Scanner scanner = new Scanner(System.in);
         while (true) {
             System.out.print("Please enter your command: ");
             try {
                 scan = scanner.nextInt();
-                if (scan >= 0 && scan <= 3)
+                if (scan >= 0 && scan <= 4)
                     break;
                 else
                     System.out.println("Your enter is wrong, please try again!");
@@ -279,13 +280,18 @@ public class Application {
 //            case 3 ->
 //            case 4 ->
             case 0 -> {
-                System.out.println("Bye");
+                System.out.println("Bye\n\n\n\n\n\n\n");
                 return;
             }
         }
         userHomePage();
+    }
+
+    public static void changePassword() {
 
     }
+
+
     public static void homepage() throws SQLException {
         System.out.println("Welcome use deliverApp!");
         System.out.println("\n=====================================");
