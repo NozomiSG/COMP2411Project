@@ -159,48 +159,6 @@ public class Application {
 
 //        userHomepage(userID);
     }
-    public static void loginAdmin() throws SQLException {
-        String account,password,operation="";
-        boolean flag=false;
-        Administrator ad=new Administrator(null,null);
-        Scanner scanner=new Scanner(System.in);
-        System.out.println("\n=====================================");
-        while (!operation.equals("q")){
-            System.out.println("Please enter your account: ");
-            account=scanner.nextLine();
-            ad.setID(account);
-            System.out.println("Please enter your password: ");
-            password=scanner.nextLine();
-            ad.setPassword(password);
-            if(ad.checkLogin()) {
-                flag=true;
-                break;
-            }
-            System.out.println("Wrong account/password! Please try again or enter 'q' to quit: ");
-            operation=scanner.nextLine();
-        }
-        if (flag){
-            System.out.println("===================================================");
-            System.out.println("Welcome, administrator "+ad.getID()+"!");
-            System.out.println("Change Order state                     >>> Enter(1)");
-            System.out.println("Add a new place                        >>> Enter(2)");
-            System.out.println("Change your password                   >>> Enter(3)");
-            System.out.println("Logout                                 >>> Enter(4)");
-            System.out.println("Please enter your command: ");
-            operation=scanner.nextLine();
-        }
-        while (true){
-            try {
-               switch (operation){
-                   case "1":
-                   case "2":
-                   case "3":
-                   case "4":
-               }
-            } catch (Exception e) {
-                System.out.println("Your enter is wrong, please try again!");
-                scanner.next();
-        }
 
 
 
