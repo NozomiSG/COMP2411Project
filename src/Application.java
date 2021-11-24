@@ -170,18 +170,18 @@ public class Application {
 
     public static void logAdminmain(Administrator ad) throws SQLException {
         Scanner scanner=new Scanner(System.in);
-        String operation;
+        int operation;
+        System.out.println("\n\n\n\n\n===================================================");
+        System.out.println("Welcome, administrator " + ad.getID());
+        System.out.println("Change Order state                     >>> Enter(1)");
+        System.out.println("Add a new place                        >>> Enter(2)");
+        System.out.println("Change your password                   >>> Enter(3)");
+        System.out.println("Logout                                 >>> Enter(4)");
         while (true) {
-            System.out.println("\n\n\n\n\n===================================================");
-            System.out.println("Welcome, administrator " + ad.getID());
-            System.out.println("Change Order state                     >>> Enter(1)");
-            System.out.println("Add a new place                        >>> Enter(2)");
-            System.out.println("Change your password                   >>> Enter(3)");
-            System.out.println("Logout                                 >>> Enter(4)");
             System.out.print("Please enter your command: ");
             try {
-                operation = scanner.nextLine();
-                if (Integer.valueOf(operation) >= 1 && Integer.valueOf(operation) <= 4)
+                operation = scanner.nextInt();
+                if (operation >= 1 && operation <= 4)
                     break;
                 else
                     System.out.println("Your enter is wrong, please try again!");
@@ -192,10 +192,10 @@ public class Application {
         }
 
         switch (operation) {
-            case "1" -> changeOrderState(ad);
-            case "2" -> changePlace(ad);
-            case "3" -> changePassword(ad);
-            case "4" ->homepage();
+            case 1 -> changeOrderState(ad);
+            case 2 -> changePlace(ad);
+            case 3 -> changePassword(ad);
+            case 4 ->homepage();
         }
 
         logAdminmain(ad);
