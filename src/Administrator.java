@@ -61,6 +61,7 @@ public class Administrator extends Account{
         OracleConnection conn = (OracleConnection) DriverManager.getConnection("jdbc:oracle:thin:@studora.comp.polyu.edu.hk:1521:dbms", "20074794D", "Peter0817..");
         Statement stmt = conn.createStatement();
         ResultSet rest=stmt.executeQuery("select password from administrator where account="+this.getID());
+        rest.next();
         if(oldPas==rest.getString(1)){
             stmt.executeQuery("update administrator set password="+"'"+newPas+"'"+" where ACCOUNT="+"'"+this.getID()+"'");
             stmt.executeQuery("COMMIT");
