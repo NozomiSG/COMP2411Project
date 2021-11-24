@@ -12,7 +12,7 @@ public class Administrator extends Account{
     @Override
     public boolean checkLogin() throws SQLException {
         DriverManager.registerDriver(new oracle.jdbc.driver.OracleDriver());
-        OracleConnection conn = (OracleConnection) DriverManager.getConnection("jdbc:oracle:thin:@studora.comp.polyu.edu.hk:1521:dbms", "20078998D", "Xyf20020429");
+        OracleConnection conn = (OracleConnection) DriverManager.getConnection("jdbc:oracle:thin:@studora.comp.polyu.edu.hk:1521:dbms", "20074794D", "Peter0817..");
         Statement stmt = conn.createStatement();
         ResultSet rset = stmt.executeQuery("select * from administrator");
         while (rset.next()) {
@@ -30,7 +30,7 @@ public class Administrator extends Account{
     }
     public void addPlace(String placeName,double x,double y) throws SQLException {
         DriverManager.registerDriver(new oracle.jdbc.driver.OracleDriver());
-        OracleConnection conn = (OracleConnection) DriverManager.getConnection("jdbc:oracle:thin:@studora.comp.polyu.edu.hk:1521:dbms", "20078998D", "Xyf20020429");
+        OracleConnection conn = (OracleConnection) DriverManager.getConnection("jdbc:oracle:thin:@studora.comp.polyu.edu.hk:1521:dbms", "20074794D", "Peter0817..");
         Statement stmt = conn.createStatement();
         ResultSet rset = stmt.executeQuery("select MAX(place_id) from place");
         rset.next();
@@ -50,6 +50,11 @@ public class Administrator extends Account{
         DriverManager.registerDriver(new oracle.jdbc.driver.OracleDriver());
         OracleConnection conn = (OracleConnection) DriverManager.getConnection("jdbc:oracle:thin:@studora.comp.polyu.edu.hk:1521:dbms", "20074794D", "Peter0817..");
         Statement stmt = conn.createStatement();
+        if(checkState(String.valueOf(orderID))==state) {
+            System.out.println("The state of the order is already "+state+"!");
+            conn.close();
+            return;
+        }
         stmt.executeQuery("update order_state set state="+st+" where order_id="+orderID);
         stmt.executeQuery("COMMIT");
         conn.close();
@@ -60,21 +65,20 @@ public class Administrator extends Account{
         DriverManager.registerDriver(new oracle.jdbc.driver.OracleDriver());
         OracleConnection conn = (OracleConnection) DriverManager.getConnection("jdbc:oracle:thin:@studora.comp.polyu.edu.hk:1521:dbms", "20074794D", "Peter0817..");
         Statement stmt = conn.createStatement();
-        ResultSet rest=stmt.executeQuery("select password from administrator where account="+this.getID());
-        if(oldPas==rest.getString(1)){
-            stmt.executeQuery("update administrator set password="+"'"+newPas+"'"+" where ACCOUNT="+"'" + this.getID() + "'");
+        ResultSet rest=stmt.executeQuery("select password from administrator where account= '"+this.getID()+"'");
+        rest.next();
+        if(oldPas.equals(rest.getString(1))){
+            stmt.executeQuery("update administrator set password="+"'"+newPas+"'"+" where ACCOUNT="+"'"+this.getID()+"'");
             stmt.executeQuery("COMMIT");
             System.out.println("Password has been changed!");
             conn.close();
-            return true;
+            return false;
         }
         else {
             System.out.println("The old password is wrong!");
             conn.close();
-            return false;
+            return true;
         }
 
     }
-
-
 }
