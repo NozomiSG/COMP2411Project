@@ -7,9 +7,9 @@ import java.sql.Statement;
 
 public class User extends Account {
 
-    private String ID;
-    private String password;
+    private String userInfo;
     private String userName;
+
 
     public User(String ID, String Password) {
         super(ID, Password);
@@ -22,21 +22,33 @@ public class User extends Account {
         Statement stmt = conn.createStatement();
         ResultSet rset = stmt.executeQuery("select * from userinf");
         while (rset.next()) {
-            if (rset.getString(4).equals(userName)) {
-                if (rset.getString(3).equals(password)) {
-                    System.out.println("Login successfully!\n\n\n");
-                    ID = rset.getString(1);
+            System.out.println("local name: "+rset.getString(4));
+            System.out.println("local pass: "+rset.getString(3));
+            if (rset.getString(4).equals(getInfo()) || rset.getString(2).equals(getInfo())) {
+                if (rset.getString(3).equals(getPassword())) {
+                    this.getID() = rset.getString(1);
+                    this.userName = rset.getString(4);
                     conn.close();
                     return true;
-                } else {
-                    System.out.println("The user name or password is incorrect. Please try again");
-                    break;
+                }
+                else {
+                    conn.close();
+                    return false;
                 }
             }
         }
         conn.close();
-        System.out.println("The adminName or password is incorrect. Please try again");
         return false;
+    }
+
+    public String getName() {
+        return userName;
+    }
+    public String getInfo() {
+        return userInfo;
+    }
+    public void setInfo(String useInfo) {
+        this.userInfo = userInfo;
     }
 
 }
