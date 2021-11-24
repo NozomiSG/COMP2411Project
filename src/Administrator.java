@@ -8,7 +8,6 @@ import java.sql.Statement;
 public class Administrator extends Account{
     private String ID;
     private String Password;
-    private String adminName;
 
     public Administrator(String ID, String Password) {
         super(ID, Password);
@@ -21,23 +20,20 @@ public class Administrator extends Account{
         Statement stmt = conn.createStatement();
         ResultSet rset = stmt.executeQuery("select * from administrator");
         while (rset.next()) {
-            if (rset.getString(1).equals(adminName)) {
+            if (rset.getString(1).equals(ID)) {
                 if (rset.getString(2).equals(Password)) {
-                    System.out.println("Login successfully!\n\n\n");
-                    ID = rset.getString(3);
                     conn.close();
-                    HomePage(ID);
+                    return true;
                 } else {
-                    System.out.println("The user name or password is incorrect. Please try again");
                     break;
                 }
             }
         }
         conn.close();
-        System.out.println("The adminName or password is incorrect. Please try again");
         return false;
     }
+    public void addPlace(){
 
-
+    }
 
 }
