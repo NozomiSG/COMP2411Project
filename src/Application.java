@@ -235,33 +235,11 @@ public class Application {
 
     public static void changePlace(Administrator ad) throws SQLException{
         String PlaceName;
-        Double x,y;
 
         Scanner scanner1=new Scanner(System.in);
         System.out.print("Please input the name of the place: ");
         PlaceName=scanner1.nextLine();
-        while (true){
-            try {
-                Scanner scanner=new Scanner(System.in);
-                System.out.print("Please input the X-coordinate of the place "+PlaceName+": ");
-                x=scanner.nextDouble();
-                break;
-            }catch (Exception e){
-                System.out.println("Wrong input! Please try again!");
-            }
-        }
-        while (true){
-            try {
-                Scanner scanner= new Scanner(System.in);
-                System.out.print("Please input the y-coordinate of the place "+PlaceName+": ");
-                y=scanner.nextDouble();
-                break;
-            }catch (Exception e){
-                System.out.println("Wrong input! Please try again!");
-            }
-        }
-
-        ad.addPlace(PlaceName,x,y);
+        ad.addPlace(PlaceName);
     }
 
     public static void deletePlace(Administrator ad) throws SQLException {
@@ -296,11 +274,12 @@ public class Application {
             conn.close();
             checkDelivery();
         }
-        String receiver, sender;
-        rset = stmt.executeQuery("select u_name , r_name from userinf,receiver where userinf.user_id=(select user_id from orderinf where order_id=" + OrderID + ") AND receiver.phone_number=(select r_phone from orderinf where order_id=" + OrderID + ")");
+        String receiver="", sender="";
+        rset = stmt.executeQuery("select u_name, r_name from userinf, receiver where userinf.phone_number = (select d_phone from orderinf where order_id = " + OrderID + ") AND receiver.phone_number=(select r_phone from orderinf where order_id=" + OrderID + ")");
         rset.next();
         sender = rset.getString(1);
         receiver = rset.getString(2);
+
         rset = stmt.executeQuery("select * from orderinf where order_id=" + OrderID);
         rset.next();
         System.out.println("\n\n=====================================");
@@ -408,7 +387,7 @@ public class Application {
                 Order order = new Order(user.getID());
                 order.newOrder();
             }
-//            case 3 ->
+            case 3 -> user.checkStatus();
             case 4 -> changePassword(user);
             case 0 -> {
                 System.out.println("Bye\n\n\n\n\n\n\n");
@@ -472,12 +451,6 @@ public class Application {
         homepage();
     }
 
-    public static void deliverOrder() throws SQLException {
-        DriverManager.registerDriver(new oracle.jdbc.driver.OracleDriver());
-        OracleConnection conn = (OracleConnection) DriverManager.getConnection("jdbc:oracle:thin:@studora.comp.polyu.edu.hk:1521:dbms", "20074794D", "Peter0817..");
-        Statement stmt = conn.createStatement();
-        ResultSet rset = stmt.executeQuery("select u_name, phone_number from userinf");
-    }
 
 
 }

@@ -19,13 +19,9 @@ public class Order {
         ResultSet rset = stmt.executeQuery("select MAX(order_id) from orderinf");
         rset.next();
         int id = rset.getInt(1) + 1;
-        conn.close();        this.orderID = id;
-
+        conn.close();
+        this.orderID = id;
         this.userID = userID;
-    }
-
-    public int getID() {
-        return orderID;
     }
 
     public void newOrder() throws SQLException {
@@ -54,10 +50,14 @@ public class Order {
         switch (scan) {
             case 1 -> creatObject();
             case 2 -> deleteObject();
-            case 3 -> deliverOrder();
+            case 3 -> {
+                deliverOrder();
+                return;
+            }
             default -> {return;}
         }
         newOrder();
+
     }
 
     public void creatObject() {
@@ -96,7 +96,7 @@ public class Order {
         items.add(new Item(orderID, name, weight));
     }
 
-    public void listObject() throws SQLException {
+    public void listObject() {
         if (items.isEmpty()) {
             System.out.println("\nNo item");
             return;
@@ -117,10 +117,11 @@ public class Order {
         String itemName;
         Scanner scanner = new Scanner(System.in);
         while (true) {
-            System.out.print("Please enter your command: ");
+            System.out.print("Please enter your object weight(Enter ~ to quit): ");
             try {
                  itemName = scanner.nextLine();
                  for (int n=0; n<items.size(); n++) {
+                     if (itemName.equals("~")) return;
                      if (items.get(n).getName().equals(itemName)) {
                          items.remove(n);
                          System.out.println("Delete successful!");
@@ -148,20 +149,27 @@ public class Order {
             place.add(rset.getInt(1));
         }
         conn.close();
+        System.out.println("\n\n\n");
         return place;
     }
+
     public void deliverOrder() throws SQLException {
+        String r_phone = "";
+        String r_name = "";
         int a = 0, b = 0;
+        String c, d;
         Scanner scanner = new Scanner(System.in);
         ArrayList<Integer> place = printPlace();
         boolean flag = true;
-        System.out.println(place.toString());
+
+        // place id
         while (flag) {
             System.out.print("Select your sender place id: ");
             try {
-                a = scanner.nextInt();
+                c = scanner.nextLine();
+                a = Integer.parseInt(c);
                 for (int n : place) {
-                    if (n == a) {
+                    if (a == n) {
                         flag = false;
                         break;
                     }
@@ -173,11 +181,14 @@ public class Order {
                 scanner.nextLine();
             }
         }
+
+        // place id
         flag = true;
         while (flag) {
             System.out.print("Select your receiver place id: ");
             try {
-                b = scanner.nextInt();
+                d = scanner.nextLine();
+                b = Integer.parseInt(d);
                 for (int n : place) {
                     if (n == b) {
                         flag = false;
@@ -192,41 +203,79 @@ public class Order {
             }
         }
 
+        // receiver's name
+        flag = true;
+        while (flag){
+            try {
+                flag = false;
+                System.out.print("Please enter receiver's name: ");
+                r_name = scanner.nextLine();
+                if (r_name.equals("")) {
+                    System.out.println("Your name cannot be empty, please try again!");
+                    flag = true;
+                }
+            } catch (Exception e) {
+                System.out.println("Your enter is wrong, please try again!");
+                return;
+            }
+        }
 
+        // phone num
+        flag = true;
+        while (flag) {
+            flag = false;
+            System.out.print("Please enter receiver's telephone number (Enter ~ to quit): ");
+            try {
+                r_phone = scanner.nextLine();
+                if (r_phone.equals("~"))
+                    return;
+                if (r_phone.length() > 13) {
+                    System.out.println("Your phone number should be less than 13 digits. Please try again!");
+                    flag = true;
+                }
+                if (Application.isNumeric(r_phone))
+                    break;
+                else {
+                    System.out.println("Your number should be all digit. Please try again");
+                    flag = true;
+                }
+
+            } catch (Exception e) {
+                System.out.println("Your enter is wrong, please try again!");
+                scanner.next();
+            }
+        }
 
         DriverManager.registerDriver(new oracle.jdbc.driver.OracleDriver());
         OracleConnection conn = (OracleConnection) DriverManager.getConnection("jdbc:oracle:thin:@studora.comp.polyu.edu.hk:1521:dbms", "20074794D", "Peter0817..");
         Statement stmt = conn.createStatement();
         for (Item item : items)
-            stmt.executeQuery("insert into object values(" + getID() + ", '" + item.getName() + "', " + item.getWeight() + ")");
-        stmt.executeQuery("COMMIT");
-        ResultSet rset = stmt.executeQuery("select phone_number from userinf where phone_number = " + userID);
-        rset.next();
+            stmt.executeQuery("insert into object values(" + orderID + ", '" + item.getName() + "', " + item.getWeight() + ")");
+        conn.close();
         double totalWeight = 0;
         for (Item item : items)
             totalWeight += item.getWeight();
         double price = countPrice(a, b ,totalWeight);
-        stmt.executeQuery("insert into orderinf values('" + userID + "', " + orderID  + ", " +  items.size() + ", " + totalWeight + ", " + price + ")");
-        stmt.executeQuery("insert into order_state values('" + orderID +"', "+ 0 + ")");
+        conn = (OracleConnection) DriverManager.getConnection("jdbc:oracle:thin:@studora.comp.polyu.edu.hk:1521:dbms", "20074794D", "Peter0817..");        stmt = conn.createStatement();
+        stmt.executeQuery("insert into orderinf values('" + r_phone + "', " + orderID  + ", " +  items.size() + ", " + totalWeight + ", " + price + ", " + userID + ")");
+        stmt.executeQuery("insert into order_state values(" + orderID +", "+ 0 + ")");
+        stmt.executeQuery("insert into receiver values(" + orderID +", '"+ r_phone +"', '"+ r_name + "')");
+        stmt.executeQuery("insert into orderPlace values(" + orderID +", "+ a +", "+ b + ")");
+        stmt.executeQuery("COMMIT");
+        System.out.println("Deliver successful!");
         conn.close();
-
     }
 
     public double countPrice(int a, int b, double weight) throws SQLException {
-        double x1, x2, y1, y2;
+        System.out.println("Print place a: "+a);
+        System.out.println("Print place b: "+b);
         double distance;
         DriverManager.registerDriver(new oracle.jdbc.driver.OracleDriver());
         OracleConnection conn = (OracleConnection) DriverManager.getConnection("jdbc:oracle:thin:@studora.comp.polyu.edu.hk:1521:dbms", "20074794D", "Peter0817..");
         Statement stmt = conn.createStatement();
-        ResultSet rset = stmt.executeQuery("select * from place where place_id = " + a);
+        ResultSet rset = stmt.executeQuery("select distance from placeDistance where (place_a = "+a+" and place_b = "+b+") OR (place_a = "+b+" and place_b = "+a+")");
         rset.next();
-        x1 = rset.getDouble(3);
-        y1 = rset.getDouble(4);
-        rset = stmt.executeQuery("select * from place where place_id = " + b);
-        rset.next();
-        x2 = rset.getDouble(3);
-        y2 = rset.getDouble(4);
-        distance = Math.pow(Math.sqrt(x1-x2)+Math.sqrt(y1-y2), 1/2);
+        distance = rset.getInt(1);
         conn.close();
         // minimum delivery amount
         if (distance<100) distance = 100;
