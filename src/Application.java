@@ -11,7 +11,6 @@ import java.util.Scanner;
 public class Application {
 
     public static User user = new User("", "");
-    public static Administrator admin = new Administrator("", "");
 
     public static void main(String[] args) throws SQLException {
         homepage();
@@ -226,13 +225,14 @@ public class Application {
                 Scanner scanner=new Scanner(System.in);
                 System.out.print("Please enter the state you want to set(true/false):  ");
                 state=scanner.nextBoolean();
-                if (state==true||state==false) break;
+                break;
             } catch (Exception e) {
                 System.out.println("Your enter is wrong! Please try again!");
             }
         }
         ad.setOrderState(orderid,state);
     }
+
     public static void changePlace(Administrator ad) throws SQLException{
         String PlaceName;
         Double x,y;
@@ -263,6 +263,7 @@ public class Application {
 
         ad.addPlace(PlaceName,x,y);
     }
+
     public static void deletePlace(Administrator ad) throws SQLException {
         int placeID;
         while(true){
@@ -279,6 +280,7 @@ public class Application {
         if(placeID==-1) return;
         ad.deletePlace(placeID);
     }
+
     public static void list_order(int OrderID) throws SQLException {
         Scanner scanner = new Scanner(System.in);
         DriverManager.registerDriver(new oracle.jdbc.driver.OracleDriver());
@@ -470,7 +472,12 @@ public class Application {
         homepage();
     }
 
-
+    public static void deliverOrder() throws SQLException {
+        DriverManager.registerDriver(new oracle.jdbc.driver.OracleDriver());
+        OracleConnection conn = (OracleConnection) DriverManager.getConnection("jdbc:oracle:thin:@studora.comp.polyu.edu.hk:1521:dbms", "20074794D", "Peter0817..");
+        Statement stmt = conn.createStatement();
+        ResultSet rset = stmt.executeQuery("select u_name, phone_number from userinf");
+    }
 
 
 }

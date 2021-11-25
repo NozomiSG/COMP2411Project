@@ -19,8 +19,8 @@ public class Order {
         ResultSet rset = stmt.executeQuery("select MAX(order_id) from orderinf");
         rset.next();
         int id = rset.getInt(1) + 1;
-        conn.close();
-        this.orderID = id;
+        conn.close();        this.orderID = id;
+
         this.userID = userID;
     }
 
