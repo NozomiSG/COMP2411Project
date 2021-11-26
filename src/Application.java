@@ -237,10 +237,16 @@ public class Application {
     public static void changePlace(Administrator ad) throws SQLException{
         String PlaceName;
         Double x,y;
+        while (true){
+            Scanner scanner1=new Scanner(System.in);
+            System.out.print("Please input the name of the place: ");
+            PlaceName=scanner1.nextLine();
+            if(PlaceName.length()>15){
+                System.out.println("The name of the place should not be more than 15 words!");
+            }
+            else break;
+        }
 
-        Scanner scanner1=new Scanner(System.in);
-        System.out.print("Please input the name of the place: ");
-        PlaceName=scanner1.nextLine();
         while (true){
             try {
                 Scanner scanner=new Scanner(System.in);

@@ -21,7 +21,7 @@ public abstract class Account {
     public boolean checkState(String OrderID) throws SQLException {
         String flag;
         DriverManager.registerDriver(new oracle.jdbc.driver.OracleDriver());
-        OracleConnection conn = (OracleConnection) DriverManager.getConnection("jdbc:oracle:thin:@studora.comp.polyu.edu.hk:1521:dbms", "20078998D", "Xyf20020429");
+        OracleConnection conn = (OracleConnection) DriverManager.getConnection("jdbc:oracle:thin:@studora.comp.polyu.edu.hk:1521:dbms", "20074794D", "Peter0817..");
         Statement stmt = conn.createStatement();
         ResultSet rset = null;
         try{

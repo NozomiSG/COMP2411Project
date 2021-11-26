@@ -13,7 +13,7 @@ public class Administrator extends Account{
     @Override
     public boolean checkLogin() throws SQLException {
         DriverManager.registerDriver(new oracle.jdbc.driver.OracleDriver());
-        OracleConnection conn = (OracleConnection) DriverManager.getConnection("jdbc:oracle:thin:@studora.comp.polyu.edu.hk:1521:dbms", "20078998D", "Xyf20020429");
+        OracleConnection conn = (OracleConnection) DriverManager.getConnection("jdbc:oracle:thin:@studora.comp.polyu.edu.hk:1521:dbms", "20074794D", "Peter0817..");
         Statement stmt = conn.createStatement();
         ResultSet rset = stmt.executeQuery("select * from administrator");
         while (rset.next()) {
@@ -31,7 +31,7 @@ public class Administrator extends Account{
     }
     public void addPlace(String placeName,double x,double y) throws SQLException {
         DriverManager.registerDriver(new oracle.jdbc.driver.OracleDriver());
-        OracleConnection conn = (OracleConnection) DriverManager.getConnection("jdbc:oracle:thin:@studora.comp.polyu.edu.hk:1521:dbms", "20078998D", "Xyf20020429");
+        OracleConnection conn = (OracleConnection) DriverManager.getConnection("jdbc:oracle:thin:@studora.comp.polyu.edu.hk:1521:dbms", "20074794D", "Peter0817..");
         Statement stmt = conn.createStatement();
         ResultSet rset = stmt.executeQuery("select MAX(place_id) from place");
         rset.next();
@@ -50,7 +50,7 @@ public class Administrator extends Account{
         }
         else st=0;
         DriverManager.registerDriver(new oracle.jdbc.driver.OracleDriver());
-        OracleConnection conn = (OracleConnection) DriverManager.getConnection("jdbc:oracle:thin:@studora.comp.polyu.edu.hk:1521:dbms", "20078998D", "Xyf20020429");
+        OracleConnection conn = (OracleConnection) DriverManager.getConnection("jdbc:oracle:thin:@studora.comp.polyu.edu.hk:1521:dbms", "20074794D", "Peter0817..");
         Statement stmt = conn.createStatement();
 //        ResultSet rset=stmt.executeQuery("select order_id from order_state");
 //        while(rset.next()){
@@ -74,7 +74,7 @@ public class Administrator extends Account{
     }
     public void deletePlace(int placeID) throws SQLException {
         DriverManager.registerDriver(new oracle.jdbc.driver.OracleDriver());
-        OracleConnection conn = (OracleConnection) DriverManager.getConnection("jdbc:oracle:thin:@studora.comp.polyu.edu.hk:1521:dbms", "20078998D", "Xyf20020429");
+        OracleConnection conn = (OracleConnection) DriverManager.getConnection("jdbc:oracle:thin:@studora.comp.polyu.edu.hk:1521:dbms", "20074794D", "Peter0817..");
         Statement stmt = conn.createStatement();
         ResultSet rset=stmt.executeQuery("select place_send_id,place_receive_id from orderPlace ");
         ArrayList<Integer> list=new ArrayList<>();
@@ -97,7 +97,7 @@ public class Administrator extends Account{
     }
     public boolean changePassword(String oldPas,String newPas) throws SQLException {
         DriverManager.registerDriver(new oracle.jdbc.driver.OracleDriver());
-        OracleConnection conn = (OracleConnection) DriverManager.getConnection("jdbc:oracle:thin:@studora.comp.polyu.edu.hk:1521:dbms", "20078998D", "Xyf20020429");
+        OracleConnection conn = (OracleConnection) DriverManager.getConnection("jdbc:oracle:thin:@studora.comp.polyu.edu.hk:1521:dbms", "20074794D", "Peter0817..");
         Statement stmt = conn.createStatement();
         ResultSet rest=stmt.executeQuery("select password from administrator where account= '"+this.getID()+"'");
         rest.next();
