@@ -11,12 +11,10 @@ import java.util.Scanner;
 public class Application {
 
     public static User user = new User("", "");
-    public static Administrator admin = new Administrator("", "");
 
     public static void main(String[] args) throws SQLException {
         homepage();
     }
-
 
     public static void registerAccount() throws SQLException {
         String username, password = "", password_1, phoneNumber = "";
@@ -108,10 +106,10 @@ public class Application {
                 scanner.next();
             }
         }
+        conn = (OracleConnection) DriverManager.getConnection("jdbc:oracle:thin:@studora.comp.polyu.edu.hk:1521:dbms", "20074794D", "Peter0817..");
         stmt = conn.createStatement();
         rset = stmt.executeQuery("select count(*) from userinf");
         rset.next();
-        int id = rset.getInt(1) + 1;
         stmt.executeQuery("insert into userinf values('" + phoneNumber + "', '" + password + "', '" + username + "')");
         stmt.executeQuery("COMMIT");
         conn.close();
@@ -227,49 +225,23 @@ public class Application {
                 Scanner scanner=new Scanner(System.in);
                 System.out.print("Please enter the state you want to set(true/false):  ");
                 state=scanner.nextBoolean();
-                if (state==true||state==false) break;
+                break;
             } catch (Exception e) {
                 System.out.println("Your enter is wrong! Please try again!");
             }
         }
         ad.setOrderState(orderid,state);
     }
+
     public static void changePlace(Administrator ad) throws SQLException{
         String PlaceName;
-        Double x,y;
-        while (true){
-            Scanner scanner1=new Scanner(System.in);
-            System.out.print("Please input the name of the place: ");
-            PlaceName=scanner1.nextLine();
-            if(PlaceName.length()>15){
-                System.out.println("The name of the place should not be more than 15 words!");
-            }
-            else break;
-        }
 
-        while (true){
-            try {
-                Scanner scanner=new Scanner(System.in);
-                System.out.print("Please input the X-coordinate of the place "+PlaceName+": ");
-                x=scanner.nextDouble();
-                break;
-            }catch (Exception e){
-                System.out.println("Wrong input! Please try again!");
-            }
-        }
-        while (true){
-            try {
-                Scanner scanner= new Scanner(System.in);
-                System.out.print("Please input the y-coordinate of the place "+PlaceName+": ");
-                y=scanner.nextDouble();
-                break;
-            }catch (Exception e){
-                System.out.println("Wrong input! Please try again!");
-            }
-        }
-
-        ad.addPlace(PlaceName,x,y);
+        Scanner scanner1=new Scanner(System.in);
+        System.out.print("Please input the name of the place: ");
+        PlaceName=scanner1.nextLine();
+        ad.addPlace(PlaceName);
     }
+
     public static void deletePlace(Administrator ad) throws SQLException {
         int placeID;
         while(true){
@@ -286,6 +258,7 @@ public class Application {
         if(placeID==-1) return;
         ad.deletePlace(placeID);
     }
+
     public static void list_order(int OrderID) throws SQLException {
         Scanner scanner = new Scanner(System.in);
         DriverManager.registerDriver(new oracle.jdbc.driver.OracleDriver());
@@ -301,11 +274,12 @@ public class Application {
             conn.close();
             checkDelivery();
         }
-        String receiver, sender;
-        rset = stmt.executeQuery("select u_name , r_name from userinf,receiver where userinf.user_id=(select user_id from orderinf where order_id=" + OrderID + ") AND receiver.phone_number=(select r_phone from orderinf where order_id=" + OrderID + ")");
+        String receiver="", sender="";
+        rset = stmt.executeQuery("select u_name, r_name from userinf, receiver where userinf.phone_number = (select d_phone from orderinf where order_id = " + OrderID + ") AND receiver.phone_number=(select r_phone from orderinf where order_id=" + OrderID + ")");
         rset.next();
         sender = rset.getString(1);
         receiver = rset.getString(2);
+
         rset = stmt.executeQuery("select * from orderinf where order_id=" + OrderID);
         rset.next();
         System.out.println("\n\n=====================================");
@@ -407,19 +381,20 @@ public class Application {
                 scanner.next();
             }
         }
-//        switch (scan) {
+        switch (scan) {
 //            case 1 ->
-//            case 2 -> {
-//                Order order = new Order(user.getID());
-//            }
-//            case 3 ->
-//            case 4 -> changePassword(user);
-//            case 0 -> {
-//                System.out.println("Bye\n\n\n\n\n\n\n");
-//                return;
-//            }
-//        }
-//        userHomePage();
+            case 2 -> {
+                Order order = new Order(user.getID());
+                order.newOrder();
+            }
+            case 3 -> user.checkStatus();
+            case 4 -> changePassword(user);
+            case 0 -> {
+                System.out.println("Bye\n\n\n\n\n\n\n");
+                return;
+            }
+        }
+        userHomePage();
     }
 
     public static void changePassword(Account ac) throws SQLException {
@@ -438,7 +413,6 @@ public class Application {
         }
 
     }
-
 
     public static void homepage() throws SQLException {
         System.out.println("Welcome use deliverApp!");
@@ -478,12 +452,6 @@ public class Application {
     }
 
 
-    public static void deliverOrder() throws SQLException {
-        DriverManager.registerDriver(new oracle.jdbc.driver.OracleDriver());
-        OracleConnection conn = (OracleConnection) DriverManager.getConnection("jdbc:oracle:thin:@studora.comp.polyu.edu.hk:1521:dbms", "20074794D", "Peter0817..");
-        Statement stmt = conn.createStatement();
-        ResultSet rset = stmt.executeQuery("select u_name, phone_number from userinf");
-    }
 
 }
 
