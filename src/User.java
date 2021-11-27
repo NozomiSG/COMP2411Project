@@ -4,6 +4,7 @@ import java.sql.DriverManager;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
+import java.util.ArrayList;
 import java.util.Scanner;
 
 public class User extends Account {
@@ -63,10 +64,10 @@ public class User extends Account {
     }
 
     public void checkStatus() throws SQLException {
-        int[] list = new int[2];
         int[] userOrder = new int[100];
+        ArrayList<Integer> list1 = new ArrayList<>();
+        ArrayList<Integer> list2 = new ArrayList<>();
         int count = 0;
-        list[0] = list[1] = 0;
         DriverManager.registerDriver(new oracle.jdbc.driver.OracleDriver());
         OracleConnection conn = (OracleConnection) DriverManager.getConnection("jdbc:oracle:thin:@studora.comp.polyu.edu.hk:1521:dbms", "20074794D", "Peter0817..");
         Statement stmt = conn.createStatement();
@@ -77,35 +78,45 @@ public class User extends Account {
 
         if (count == 0) {
             System.out.println("No order");
-            return;
         }
         while (count>0) {
             stmt = conn.createStatement();
-            rset = stmt.executeQuery("select state from order_state where order_id = '" + userOrder[--count] + "'");
+            rset = stmt.executeQuery("select state, order_id from order_state where order_id = '" + userOrder[--count] + "'");
             rset.next();
-            list[rset.getInt(1)]++;
+            if (rset.getInt(1) == 0) {
+                list1.add(rset.getInt(2));
+            } else {
+                list2.add(rset.getInt(2));
+            }
         }
         conn.close();
         System.out.println("======Your current order status=====");
-        System.out.printf("In the delivery: %d\n", list[0]);
-        System.out.printf("Delivered:       %d\n", list[1]);
+        System.out.printf("In the delivery: %d\n", list1.size());
+        System.out.println("OrderId: "+list1);
+        System.out.println("------------------------------------");
+        System.out.printf("Delivered: %d\n", list2.size());
+        System.out.println("OrderId: "+list2);
         System.out.println("====================================\n");
 
         System.out.println("Do you want to search more order? (Enter 'N' to exit and other to search)");
         Scanner scanner = new Scanner(System.in);
         String cmd;
-        System.out.print("Please enter your command: ");
-        try {
-            cmd = scanner.next();
-            if (cmd.equals("N")) {
+        while (true) {
+            System.out.print("Please enter your command: ");
+            try {
+                cmd = scanner.next();
+                if (cmd.equals("N")) {
+                    return;
+                } else {
+                    Application.checkDelivery();
+                }
+            } catch (Exception e) {
+                System.out.println("Your enter is wrong, please try again!");
+                scanner.nextLine();
             }
-            else Application.checkDelivery();
-        } catch (Exception e) {
-            System.out.println("Your enter is wrong, please try again!");
-            scanner.nextLine();
         }
-
     }
+
 
     public String getName() {
         return userName;
@@ -123,7 +134,4 @@ public class User extends Account {
         this.userName = userName;
     }
 
-    public void printInfo() {
-        System.out.println();
-    }
 }
