@@ -145,7 +145,7 @@ public class Order {
         ResultSet rset = stmt.executeQuery("select * from place");
         System.out.println("Place:");
         while (rset.next()) {
-            System.out.printf("Place id: %8d Place name: %25S\n", rset.getInt(1), rset.getString(2));
+            System.out.printf("Place id: %-8d Place name: %-15S\n", rset.getInt(1), rset.getString(2));
             place.add(rset.getInt(1));
         }
         conn.close();
@@ -262,13 +262,19 @@ public class Order {
         stmt.executeQuery("insert into receiver values(" + orderID +", '"+ r_phone +"', '"+ r_name + "')");
         stmt.executeQuery("insert into orderPlace values(" + orderID +", "+ a +", "+ b + ")");
         stmt.executeQuery("COMMIT");
-        System.out.println("Deliver successful!");
+        System.out.println("Deliver successful!\n");
+        String s1="|The order ID:   "+orderID;
+        String s2="|The receiver's name: "+r_name;
+        String s3="|The receiver's phone: "+r_phone;
+        System.out.println("=========================================");
+        System.out.printf("%-40s|\n",s1);
+        System.out.printf("%-40s|\n",s2);
+        System.out.printf("%-40s|\n",s3);
+        System.out.println("=========================================\n\n\n");
         conn.close();
     }
 
     public double countPrice(int a, int b, double weight) throws SQLException {
-        System.out.println("Print place a: "+a);
-        System.out.println("Print place b: "+b);
         double distance;
         DriverManager.registerDriver(new oracle.jdbc.driver.OracleDriver());
         OracleConnection conn = (OracleConnection) DriverManager.getConnection("jdbc:oracle:thin:@studora.comp.polyu.edu.hk:1521:dbms", "20074794D", "Peter0817..");
