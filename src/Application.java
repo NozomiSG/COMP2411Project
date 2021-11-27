@@ -316,7 +316,7 @@ public class Application {
                 scanner.next();
             }
         }
-        if (choice == "0") return;
+        if (choice.equals("0")) return;
         findOrder(choice);
         checkDelivery();
     }
