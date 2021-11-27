@@ -1,6 +1,4 @@
 import oracle.jdbc.driver.OracleConnection;
-
-
 import java.sql.DriverManager;
 import java.sql.ResultSet;
 import java.sql.SQLException;
@@ -15,7 +13,6 @@ public class Application {
     public static void main(String[] args) throws SQLException {
         homepage();
     }
-
     public static void registerAccount() throws SQLException {
         String username, password = "", password_1, phoneNumber = "";
         Scanner scanner = new Scanner(System.in);
@@ -450,8 +447,5 @@ public class Application {
         }
         homepage();
     }
-
-
-
 }
 

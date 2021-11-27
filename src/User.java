@@ -41,7 +41,6 @@ public class User extends Account {
     }
 
     @Override
-
     public boolean changePassword(String oldPas,String newPas) throws SQLException {
         DriverManager.registerDriver(new oracle.jdbc.driver.OracleDriver());
         OracleConnection conn = (OracleConnection) DriverManager.getConnection("jdbc:oracle:thin:@studora.comp.polyu.edu.hk:1521:dbms", "20074794D", "Peter0817..");

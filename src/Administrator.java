@@ -112,7 +112,7 @@ public class Administrator extends Account{
         DriverManager.registerDriver(new oracle.jdbc.driver.OracleDriver());
         OracleConnection conn = (OracleConnection) DriverManager.getConnection("jdbc:oracle:thin:@studora.comp.polyu.edu.hk:1521:dbms", "20074794D", "Peter0817..");
         Statement stmt = conn.createStatement();
-        ResultSet rset=stmt.executeQuery("select place_send_id,place_receive_id from orderPlace ");
+        ResultSet rset=stmt.executeQuery("select place_send_id,place_receive_id from orderPlace");
         ArrayList<Integer> list=new ArrayList<>();
         while (rset.next()){
             list.add(rset.getInt(1));
