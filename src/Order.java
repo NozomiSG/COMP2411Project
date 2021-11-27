@@ -262,7 +262,7 @@ public class Order {
         stmt.executeQuery("insert into receiver values(" + orderID +", '"+ r_phone +"', '"+ r_name + "')");
         stmt.executeQuery("insert into orderPlace values(" + orderID +", "+ a +", "+ b + ")");
         stmt.executeQuery("COMMIT");
-        System.out.println("Deliver successful!");
+        System.out.println("Deliver successful!\n\n\n\n");
         conn.close();
     }
 

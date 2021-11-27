@@ -275,10 +275,12 @@ public class Application {
             checkDelivery();
         }
         String receiver="", sender="";
-        rset = stmt.executeQuery("select u_name, r_name from userinf, receiver where userinf.phone_number = (select d_phone from orderinf where order_id = " + OrderID + ") AND receiver.phone_number=(select r_phone from orderinf where order_id=" + OrderID + ")");
+        rset = stmt.executeQuery("select u_name from userinf where phone_number = (select d_phone from orderinf where order_id = " + OrderID + ")");
         rset.next();
         sender = rset.getString(1);
-        receiver = rset.getString(2);
+        rset = stmt.executeQuery("select r_name from receiver where phone_number = (select r_phone from orderinf where order_id=" + OrderID + ")");
+        rset.next();
+        receiver = rset.getString(1);
 
         rset = stmt.executeQuery("select * from orderinf where order_id=" + OrderID);
         rset.next();
@@ -287,9 +289,9 @@ public class Application {
         System.out.println("OrderID:                  " + OrderID);
         System.out.println("The sender's name:        " + sender);
         System.out.println("The receiver's name:      " + receiver);
-        System.out.println("The number of the object: " + rset.getInt(4));
-        System.out.println("Total weight:             " + rset.getDouble(5));
-        System.out.println("Total price:              " + rset.getDouble(6) + "\n\n");
+        System.out.println("The number of the object: " + rset.getInt(3));
+        System.out.println("Total weight:             " + rset.getDouble(4)+"kg");
+        System.out.println("Total price:              " + rset.getDouble(5) + "\n\n");
         conn.close();
         System.out.println("Please enter to continue...");
         scanner.nextLine();
@@ -298,43 +300,56 @@ public class Application {
     public static void checkDelivery() throws SQLException {
         System.out.println("\n=====================================");
         Scanner scanner = new Scanner(System.in);
-        int choice;
+        String choice;
+        System.out.println("OrderID to check         >>> Enter(1) ");
+        System.out.println("PhoneNumber to check     >>> Enter(2) ");
+        System.out.println("Exit the programme       >>> Enter(0) ");
+        System.out.println("=====================================\n");
         while (true) {
             try {
-                System.out.println("OrderID to check         >>> Enter(1) ");
-                System.out.println("PhoneNumber to check     >>> Enter(2) ");
-                choice = scanner.nextInt();
-                if (choice > 2 || choice < 1) System.out.println("Your enter is wrong, please try again!");
+                System.out.print("Please enter your command: ");
+                choice = scanner.nextLine();
+                if (!choice.equals("0") && !choice.equals("1") && !choice.equals("2")) System.out.println("Your enter is wrong, please try again!");
                 else break;
             } catch (Exception e) {
                 System.out.println("Your enter is wrong, please try again!");
                 scanner.next();
             }
         }
-        if (choice == 1) {
+        if (choice == "0") return;
+        findOrder(choice);
+        checkDelivery();
+    }
+
+    public static void findOrder(String choice) throws SQLException {
+        Scanner scanner = new Scanner(System.in);
+        if (choice.equals("1")) {
             int OrderID;
             while (true) {
                 try {
-                    System.out.println("Please enter the OrderID: ");
+                    System.out.print("Please enter the OrderID（Enter 0 to exit): ");
                     OrderID = scanner.nextInt();
                     if (String.valueOf(OrderID).length() > 8)
                         System.out.println("The OrderID should be at most 8 numbers!");
-                    else break;
+                    else if (OrderID == 0) {
+                        return;
+                    } else break;
                 } catch (Exception e) {
                     System.out.println("Your enter is wrong, please try again!");
                     scanner.next();
                 }
             }
             list_order(OrderID);
-        } else {
+        } else if(choice.equals("2")){
             Scanner sc = new Scanner(System.in);
             String phoneNumber;
             while (true) {
                 try {
-                    System.out.println("Please enter your the phone umber: ");
+                    System.out.print("Please enter your the phone number (Enter 0 to exit): ");
                     phoneNumber = sc.nextLine();
                     if (String.valueOf(phoneNumber).length() > 13)
                         System.out.println("The phone umber should be at most 13 numbers!");
+                    else if (phoneNumber == "0") return;
                     else break;
                 } catch (Exception e) {
                     System.out.println("Your enter is wrong, please try again!");
@@ -354,16 +369,14 @@ public class Application {
             }
             conn.close();
         }
-
     }
 
     public static void userHomePage() throws SQLException {
         System.out.println("Hello " + user.getName());
         System.out.println("\n==========================================");
-        System.out.println("Check personal Information     >>> Enter(1)");
-        System.out.println("Establish new orders           >>> Enter(2)");
-        System.out.println("Check delivery status          >>> Enter(3)");
-        System.out.println("Change password                >>> Enter(4)");
+        System.out.println("Establish new orders           >>> Enter(1)");
+        System.out.println("Check delivery status          >>> Enter(2)");
+        System.out.println("Change password                >>> Enter(3)");
         System.out.println("Logout                         >>> Enter(0)");
         System.out.println("===========================================\n");
         int scan;
@@ -372,7 +385,7 @@ public class Application {
             System.out.print("Please enter your command: ");
             try {
                 scan = scanner.nextInt();
-                if (scan >= 0 && scan <= 4)
+                if (scan >= 0 && scan <= 3)
                     break;
                 else
                     System.out.println("Your enter is wrong, please try again!");
@@ -382,13 +395,12 @@ public class Application {
             }
         }
         switch (scan) {
-//            case 1 ->
-            case 2 -> {
+            case 1 -> {
                 Order order = new Order(user.getID());
                 order.newOrder();
             }
-            case 3 -> user.checkStatus();
-            case 4 -> changePassword(user);
+            case 2 -> user.checkStatus();
+            case 3 -> changePassword(user);
             case 0 -> {
                 System.out.println("Bye\n\n\n\n\n\n\n");
                 return;

@@ -63,10 +63,10 @@ public class User extends Account {
     }
 
     public void checkStatus() throws SQLException {
-        int[] list = new int[3];
+        int[] list = new int[2];
         int[] userOrder = new int[100];
         int count = 0;
-        list[0] = list[1] = list[2] = 0;
+        list[0] = list[1] = 0;
         DriverManager.registerDriver(new oracle.jdbc.driver.OracleDriver());
         OracleConnection conn = (OracleConnection) DriverManager.getConnection("jdbc:oracle:thin:@studora.comp.polyu.edu.hk:1521:dbms", "20074794D", "Peter0817..");
         Statement stmt = conn.createStatement();
@@ -87,9 +87,9 @@ public class User extends Account {
         }
         conn.close();
         System.out.println("======Your current order status=====");
-        System.out.printf("Didn't sent:     %d\n", list[0]);
-        System.out.printf("In the delivery: %d\n", list[1]);
-        System.out.printf("Delivered:       %d\n\n\n", list[2]);
+        System.out.printf("In the delivery: %d\n", list[0]);
+        System.out.printf("Delivered:       %d\n", list[1]);
+        System.out.println("====================================\n");
 
         System.out.println("Do you want to search more order? (Enter 'N' to exit and other to search)");
         Scanner scanner = new Scanner(System.in);
@@ -97,7 +97,8 @@ public class User extends Account {
         System.out.print("Please enter your command: ");
         try {
             cmd = scanner.next();
-            if (cmd.equals("N")) return;
+            if (cmd.equals("N")) {
+            }
             else Application.checkDelivery();
         } catch (Exception e) {
             System.out.println("Your enter is wrong, please try again!");
